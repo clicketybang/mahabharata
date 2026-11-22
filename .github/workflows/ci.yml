@@ -27,6 +27,8 @@ jobs:
         run: npm run validate
       - name: Validator fixtures must fail for the right reason
         run: npm run test:validator
+      - name: Contrast audit (WCAG AA for every UI text pair)
+        run: npm run contrast
       - name: Type check
         run: npx astro check
       - name: Build

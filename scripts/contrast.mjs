@@ -11,7 +11,7 @@ const ratio = (a, b) => { const [x, y] = [L(a), L(b)].sort((p, q) => q - p); ret
 
 const T = {
   cotton: "#f6ecd8", cottonDeep: "#eedfc0", caption: "#fbf4e4", chip: "#f1e3c4",
-  ink: "#2b2018", madder: "#a63a2b", madderBrown: "#8a2f22", indigo: "#2e4377", leaf: "#5b7a46", muted: "#6e5b45", white: "#fbf4e4",
+  ink: "#2b2018", leafText: "#55723f", madder: "#a63a2b", madderBrown: "#8a2f22", indigo: "#2e4377", leaf: "#5b7a46", muted: "#6e5b45", white: "#fbf4e4",
 };
 
 /* [where it appears, foreground, background, size class] */
@@ -28,7 +28,8 @@ const PAIRS = [
   ["Muted text on chip", "muted", "chip", "normal"],
   ["Map tab gloss (11px) on chip (active tab)", "muted", "chip", "normal"],
   ["'Who is speaking' chip: indigo on chip", "indigo", "chip", "normal"],
-  ["'✓ walked' tick: leaf on caption cream", "leaf", "caption", "normal"],
+  ["'✓ walked' tick: leaf-text on caption cream", "leafText", "caption", "normal"],
+  ["Leaf (#5b7a46) for borders and hover rings only — not text (UI component)", "leaf", "caption", "ui"],
   ["Primary button: cotton on madder", "cotton", "madder", "normal"],
   ["Return button: caption cream on madder", "white", "madder", "normal"],
   ["Toast: cotton on madder", "cotton", "madder", "normal"],
