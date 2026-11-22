@@ -1,5 +1,8 @@
 [
-  { "id": "hall", "name": "Hall", "level": "spot", "certainty": "textual" },
-  { "id": "field", "name": "Kurukṣetra", "level": "site", "certainty": "textual" },
-  { "id": "dvaraka", "name": "Dvārakā", "level": "site", "certainty": "traditional" }
+  { "id": "kuru", "name": "Kuru", "level": "realm", "parent_id": null, "certainty": "traditional", "certainty_note": "A region." },
+  { "id": "city", "name": "City", "level": "site", "parent_id": "kuru", "certainty": "traditional", "certainty_note": "A city." },
+  { "id": "hall", "name": "Hall", "level": "spot", "parent_id": "city", "certainty": "textual", "certainty_note": "In the city." },
+  { "id": "field", "name": "Kurukṣetra", "level": "site", "parent_id": "kuru", "certainty": "textual", "certainty_note": "The field." },
+  { "id": "dvaraka", "name": "Dvārakā", "level": "site", "parent_id": null, "certainty": "traditional", "certainty_note": "On the sea." },
+  { "id": "naimisha", "name": "Naimiṣa", "level": "site", "parent_id": null, "certainty": "traditional", "certainty_note": "A forest with no moments yet." }
 ]

@@ -10,12 +10,13 @@ export type BranchBy = "character" | "place";
 export type Branch = [BranchBy, string];
 export type Status = "built" | "drafted" | "unwritten";
 
+export type PlaceLevel = "realm" | "site" | "spot";
 export interface PlaceData {
-  id: string; name: string; short?: string; parent_id: string | null; level: "realm" | "site" | "spot";
-  certainty: Certainty; map_xy: [number, number]; desc?: string; icon: string; band?: number; landmark: boolean;
+  id: string; name: string; short?: string; parent_id: string | null; level: PlaceLevel;
+  certainty: Certainty; certainty_note: string; map_xy: [number, number]; r?: number; desc?: string; icon: string; band?: number;
 }
 export interface PersonData {
-  id: string; name: string; dev: string; bio: string; identity_colour: string; line_pattern: string;
+  id: string; name: string; dev: string; bio: string; identity_colour: string; family: string;
   home: string; returns_home: boolean; death_t?: number; aliases: string[];
   figure: Record<string, string | boolean>;
 }
@@ -29,16 +30,19 @@ export interface MomentData {
   intro?: string; len?: number; day?: string; cams?: Cam[]; anchors?: Record<string, number>;
   art?: string; art_alt?: string;
 }
-export interface ReaderData { places: PlaceData[]; people: PersonData[]; moments: MomentData[]; tiers: string[] }
+export interface FamilyData { id: string; name: string; pattern: string; note: string }
+export interface ReaderData { places: PlaceData[]; people: PersonData[]; families: FamilyData[]; moments: MomentData[]; tiers: string[] }
 
 /* ---------- runtime ---------- */
 /** [scroll progress, centre x, centre y, view width] */
 export type Cam = [number, number, number, number];
 
-export interface Place { n: string; short?: string; d?: string; icon: string; map: [number, number] }
-export interface Landmark { n: string; map: [number, number]; icon: string }
+export interface Place {
+  n: string; short?: string; d?: string; icon: string; map: [number, number];
+  level: PlaceLevel; parent: string | null; note: string; r?: number; band?: number;
+}
 export interface Person {
-  n: string; dev: string; bio: string; line: string; dash: string; home: string;
+  n: string; dev: string; bio: string; line: string; dash: string; family: string; home: string;
   returnsHome: boolean; death?: number; f: FigureOpts;
 }
 /** a moment on the timeline (the shape the rule works on) */
@@ -61,7 +65,8 @@ export interface Mark { id: string; p: number; where: string; note: string; t: n
 export interface ReturnPoint { id: string; y: number; title: string }
 
 export interface Story {
-  places: Record<string, Place>; cert: Record<string, Certainty>; bandOrder: string[]; landmarks: Landmark[];
-  people: Record<string, Person>; timeline: Node[]; node: Record<string, Node>;
+  /** every place: realms, sites and spots. bandOrder = the sites that get a Kāla row, top to bottom */
+  places: Record<string, Place>; cert: Record<string, Certainty>; bandOrder: string[];
+  people: Record<string, Person>; families: Record<string, FamilyData>; timeline: Node[]; node: Record<string, Node>;
   scenes: Record<string, Scene>; meta: Record<string, Meta>; assembly: Set<string>; tiers: string[];
 }

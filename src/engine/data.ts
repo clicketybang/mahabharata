@@ -26,26 +26,38 @@ export function readBodies(): Record<string, Body> {
   return bodies;
 }
 
+/** the site a place belongs to: a spot's parent site, or the place itself */
+export function siteOf(pid: string): string {
+  const p = story.places[pid];
+  return p?.level === "spot" && p.parent ? p.parent : pid;
+}
+
+/** "Assembly Hall › Hastināpura › Kuru" */
+export function placePath(pid: string): string[] {
+  const out: string[] = [];
+  for (let p: string | null = pid; p && story.places[p]; p = story.places[p].parent) out.push(p);
+  return out;
+}
+
 const lookup = (table: Record<string, string>, k: unknown): string =>
   (typeof k === "string" && table[k]) || String(k);
 
 export function loadData(data: ReaderData, bodies: Record<string, Body>): void {
-  const real = data.places.filter(p => !p.landmark).sort((a, b) => (a.band ?? 0) - (b.band ?? 0));
   story.places = {}; story.cert = {};
-  real.forEach(p => {
-    story.places[p.id] = { n: p.name, short: p.short, d: p.desc, icon: p.icon, map: p.map_xy };
+  data.places.forEach(p => {
+    story.places[p.id] = { n: p.name, short: p.short, d: p.desc, icon: p.icon, map: p.map_xy,
+      level: p.level, parent: p.parent_id, note: p.certainty_note, r: p.r, band: p.band };
     story.cert[p.id] = p.certainty;
   });
-  story.bandOrder = real.map(p => p.id);
-  story.landmarks = data.places.filter(p => p.landmark).map(p => ({ n: p.name, map: p.map_xy, icon: p.icon }));
 
+  story.families = Object.fromEntries(data.families.map(f => [f.id, f]));
   story.people = {};
   data.people.forEach(p => {
     const f = { ...p.figure } as unknown as FigureOpts;
     f.skin = lookup(SK, p.figure.skin);
     if (p.figure.cloth) f.cloth = lookup(C, p.figure.cloth);
     const person: Person = {
-      n: p.name, dev: p.dev, bio: p.bio, line: p.identity_colour, dash: p.line_pattern, home: p.home,
+      n: p.name, dev: p.dev, bio: p.bio, line: p.identity_colour, dash: story.families[p.family]?.pattern ?? "", family: p.family, home: p.home,
       returnsHome: p.returns_home, death: p.death_t, f,
     };
     story.people[p.id] = person;
@@ -56,6 +68,9 @@ export function loadData(data: ReaderData, bodies: Record<string, Body>): void {
     .map(m => ({ id: m.id, t: m.t_story, place: m.place_id, cast: m.cast.map(c => c.id), title: m.title, status: m.status, era: m.era }))
     .sort((a, b) => a.t - b.t);
   story.node = Object.fromEntries(story.timeline.map(n => [n.id, n]));
+  // Kāla rows (Sprint 3, D1): one per site that a moment or a person's home falls in
+  const used = new Set([...story.timeline.map(n => siteOf(n.place)), ...Object.values(story.people).map(p => siteOf(p.home))]);
+  story.bandOrder = [...used].sort((a, b) => (story.places[a].band ?? 0) - (story.places[b].band ?? 0));
   story.assembly = new Set(data.moments.filter(m => m.assembly).map(m => m.id));
 
   story.meta = {}; story.scenes = {};

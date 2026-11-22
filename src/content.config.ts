@@ -54,8 +54,8 @@ const people = defineCollection({
     name: z.string(),
     dev: z.string(),
     bio: z.string(),
-    identity_colour: z.string().regex(/^#[0-9a-f]{6}$/i),
-    line_pattern: z.string(), // SVG dash pattern; "" = solid
+    identity_colour: z.string().regex(/^#[0-9a-f]{6}$/i), // the individual (A7: never moral); checked by scripts/identity-colours.mjs
+    family: id, // birth line → the line pattern in Kāla
     home: id,
     returns_home: z.boolean().default(false),
     death_t: z.number().optional(),
@@ -73,12 +73,19 @@ const places = defineCollection({
     parent_id: id.nullable().default(null),
     level: z.enum(["realm", "site", "spot"]),
     certainty: z.enum(["textual", "traditional", "conjectural"]),
+    certainty_note: z.string(), // one line: why this certainty (unverified until scholarly review)
     map_xy: z.tuple([z.number(), z.number()]),
+    r: z.number().optional(), // realms: radius of the soft region on Deśa
     desc: z.string().optional(),
     icon: z.string(),
-    band: z.number().optional(), // row order in the Kāla chart
-    landmark: z.boolean().default(false), // shown fogged on Deśa; not yet a story setting
+    band: z.number().optional(), // sites: row order in the Kāla chart (spots use their site's row)
   }),
+});
+
+/* family lines: the line pattern every member shares in Kāla (Sprint 3, D4) */
+const families = defineCollection({
+  loader: file("src/content/families.json"),
+  schema: z.object({ name: z.string(), pattern: z.string().min(1), note: z.string() }),
 });
 
 const edges = defineCollection({
@@ -100,4 +107,4 @@ const tellings = defineCollection({
   }),
 });
 
-export const collections = { moments, people, places, edges, tellings };
+export const collections = { moments, people, places, families, edges, tellings };

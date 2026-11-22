@@ -6,6 +6,7 @@ import { headSVG, placeBadge } from "../badges";
 import { med } from "../pages";
 import { openOverlay } from "../focus";
 import { $, $$ } from "../util";
+import { siteOf, placePath } from "../data";
 import { renderKala } from "./kala";
 import { renderDesha } from "./desha";
 import { renderPatra, renderMarga, renderSmriti } from "./panels";
@@ -39,7 +40,19 @@ export function nodeInfo(id: string): void {
    ${open ? `<button class="kbtn primary" data-go="${id}">${progress.visited.has(id) ? "Revisit" : "Enter"}</button>` : `<span class="hand" style="color:var(--muted)">unpainted</span>`}`);
 }
 
+/** a site's info strip: certainty and why, its realm, and its moments grouped by spot (D1) */
 export function placeInfo(id: string): void {
-  const list = story.timeline.filter(n => n.place === id);
-  showInfo(`<div class="ic">${placeBadge(id)}</div><div class="tx"><b>${story.places[id].n}<span class="cert">${story.cert[id]} location</span></b><div style="font-size:15px;line-height:1.35;margin-top:2px">${story.places[id].d}</div><div class="chips">${list.map(n => n.status === "unwritten" ? `<span class="chip dim">${n.title}</span>` : `<button class="chip" data-go="${n.id}" style="${progress.visited.has(n.id) ? `border-color:${C.gold};color:${C.gold}` : ""}">${n.title}</button>`).join("")}</div></div>`);
+  const P = story.places, site = siteOf(id), p = P[site];
+  const realm = placePath(site).slice(1).map(r => P[r].n).join(" › ");
+  const chip = (nid: string) => {
+    const n = story.node[nid];
+    return n.status === "unwritten" ? `<span class="chip dim">${n.title}</span>`
+      : `<button class="chip" data-go="${n.id}" style="${progress.visited.has(n.id) ? `border-color:${C.gold};color:${C.gold}` : ""}">${n.title}</button>`;
+  };
+  const here = story.timeline.filter(n => siteOf(n.place) === site);
+  const groups = [site, ...Object.keys(P).filter(k => P[k].parent === site)]
+    .map(pl => ({ pl, ms: here.filter(n => n.place === pl) })).filter(g => g.ms.length);
+  const list = groups.map(g => `${g.pl === site ? "" : `<div class="spot">${P[g.pl].short || P[g.pl].n.split(",")[0]}</div>`}<div class="chips">${g.ms.map(n => chip(n.id)).join("")}</div>`).join("")
+    || `<div class="chips"><span class="chip dim">no moments here yet</span></div>`;
+  showInfo(`<div class="ic">${placeBadge(site)}</div><div class="tx"><b>${p.n}<span class="cert" title="${p.note}">${story.cert[site]} location</span></b>${realm ? `<div class="realm">in ${realm}</div>` : ""}<div style="font-size:15px;line-height:1.35;margin-top:2px">${p.d ?? ""}</div><div class="certnote">${p.note}</div>${list}</div>`);
 }
