@@ -1,0 +1,40 @@
+name: CI
+
+# Every pull request must pass: story-graph validator (the chronology guard), its fixtures,
+# type check, build, and the parity walk-through in Chrome. Deploys are done by Cloudflare
+# Workers Builds (production on merge to main; a Preview per branch).
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Validate story graph (Rule 1 — chronology)
+        run: npm run validate
+      - name: Validator fixtures must fail for the right reason
+        run: npm run test:validator
+      - name: Type check
+        run: npx astro check
+      - name: Build
+        run: npm run build
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Parity walk-through (desktop + mobile, Chrome)
+        run: |
+          pip install playwright==1.*
+          npm run test:parity
