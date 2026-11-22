@@ -25,6 +25,8 @@ jobs:
       - run: npm ci
       - name: Validate story graph (Rule 1 — chronology)
         run: npm run validate
+      - name: Traversal report (dead ends, unreachable moments, threads) — strict once the spine is drafted
+        run: npm run traverse
       - name: Validator fixtures must fail for the right reason
         run: npm run test:validator
       - name: Contrast audit (WCAG AA for every UI text pair)

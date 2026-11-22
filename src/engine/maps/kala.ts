@@ -23,7 +23,7 @@ export function renderKala(): void {
   const avail = $("#kalaScroll").clientHeight || 700, colW = innerWidth < 700 ? 96 : 118, x0 = 70, y0 = 64;
   const bandH = Math.max(38, Math.min(74, (avail - y0 - 18) / BAND_ORDER.length)), W = x0 * 2 + colW * (TL.length - 1), H = y0 + bandH * BAND_ORDER.length + 30;
   const X = (i: number) => x0 + i * colW, BY = (pl: string) => y0 + BAND_ORDER.indexOf(pl) * bandH + bandH / 2;
-  const order = Object.keys(PEOPLE);
+  const order = Object.keys(PEOPLE).filter(p => !PEOPLE[p].minor); // one-scene figures get no line
   const lives = Object.fromEntries(order.map(p => [p, lifeAt(p)]));
   const pos = (pid: string, i: number): [number, number] | null => {
     const pl = lives[pid][i]; if (!pl) return null;
@@ -45,13 +45,14 @@ export function renderKala(): void {
   let base = "", lit = "";
   const focusSet = new Set(NODE[ui.current]?.cast || order);
   order.forEach(pid => {
-    const col = PEOPLE[pid].line, hl = !ui.kalaHL || ui.kalaHL === pid;
+    // D6 (Sprint 4): the current cast in colour, everyone else faint, until Sprint 6's focus+context
+    const col = PEOPLE[pid].line, hl = !ui.kalaHL || ui.kalaHL === pid, inFocus = focusSet.has(pid) || !!ui.kalaHL;
     const seenIdx = TL.map((n, i) => progress.visited.has(n.id) && n.cast.includes(pid) ? i : -1).filter(i => i >= 0), lo = Math.min(...seenIdx), hi = Math.max(...seenIdx);
-    seenIdx.forEach(i => { const p = pos(pid, i); if (p) lit += `<circle cx="${p[0]}" cy="${p[1]}" r="7" fill="${col}" opacity="${hl ? .9 : .1}" filter="url(#glow)"/>`; });
+    seenIdx.forEach(i => { const p = pos(pid, i); if (p) lit += `<circle cx="${p[0]}" cy="${p[1]}" r="7" fill="${col}" opacity="${hl && inFocus ? .9 : .1}" filter="url(#glow)"/>`; });
     for (let i = 0; i < TL.length - 1; i++) {
       const a = pos(pid, i), b = pos(pid, i + 1); if (!a || !b) continue;
-      base += `<path class="kline" d="${curve(a, b)}" fill="none" stroke="${C.muted}" stroke-width="3" stroke-linecap="round" opacity="${hl ? .95 : .15}"/>`;
-      if (seenIdx.length && i >= lo && i < hi) lit += `<path d="${curve(a, b)}" fill="none" stroke="${col}" stroke-width="${ui.kalaHL === pid ? 6 : 4.5}" stroke-linecap="${PEOPLE[pid].dash ? "butt" : "round"}" ${PEOPLE[pid].dash ? `stroke-dasharray="${PEOPLE[pid].dash}"` : ""} opacity="${hl ? (focusSet.has(pid) || ui.kalaHL ? 1 : .4) : .12}"/>`;
+      base += `<path class="kline" d="${curve(a, b)}" fill="none" stroke="${C.muted}" stroke-width="3" stroke-linecap="round" opacity="${hl ? (inFocus ? .95 : .3) : .15}"/>`;
+      if (seenIdx.length && i >= lo && i < hi) lit += `<path d="${curve(a, b)}" fill="none" stroke="${col}" stroke-width="${ui.kalaHL === pid ? 6 : 4.5}" stroke-linecap="${PEOPLE[pid].dash ? "butt" : "round"}" ${PEOPLE[pid].dash ? `stroke-dasharray="${PEOPLE[pid].dash}"` : ""} opacity="${hl ? (inFocus ? 1 : .12) : .12}"/>`;
     }
     if (PEOPLE[pid].death != null) {
       const li = lives[pid].map(Boolean).lastIndexOf(true), d = pos(pid, li);
@@ -72,7 +73,8 @@ export function renderKala(): void {
   // portrait medallions at the start of each line
   order.forEach(pid => {
     const first = lives[pid].findIndex(Boolean), p = pos(pid, first); if (!p) return;
-    s += `<g data-person="${pid}" role="button" tabindex="0" aria-label="${ui.kalaHL === pid ? "Show all lives" : `Follow ${PEOPLE[pid].n}’s river`}" style="cursor:pointer" opacity="${!ui.kalaHL || ui.kalaHL === pid ? 1 : .25}"><circle cx="${p[0] - 40}" cy="${p[1]}" r="17" fill="${PEOPLE[pid].line}"/><svg x="${p[0] - 56}" y="${p[1] - 16}" width="32" height="32">${headSVG(pid).replace("<svg ", "<svg width='32' height='32' ")}</svg><circle cx="${p[0] - 40}" cy="${p[1]}" r="16" fill="none" stroke="${PEOPLE[pid].line}" stroke-width="3"/></g>`;
+    const medOp = ui.kalaHL ? (ui.kalaHL === pid ? 1 : .25) : focusSet.has(pid) ? 1 : .45;
+    s += `<g data-person="${pid}" role="button" tabindex="0" aria-label="${ui.kalaHL === pid ? "Show all lives" : `Follow ${PEOPLE[pid].n}’s river`}" style="cursor:pointer" opacity="${medOp}"><circle cx="${p[0] - 40}" cy="${p[1]}" r="17" fill="${PEOPLE[pid].line}"/><svg x="${p[0] - 56}" y="${p[1] - 16}" width="32" height="32">${headSVG(pid).replace("<svg ", "<svg width='32' height='32' ")}</svg><circle cx="${p[0] - 40}" cy="${p[1]}" r="16" fill="none" stroke="${PEOPLE[pid].line}" stroke-width="3"/></g>`;
   });
   $("#kalaScroll").innerHTML = `<svg id="kalaSvg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">${s}</svg>`;
   // fixed place labels

@@ -12,12 +12,13 @@
     "deploy": "astro build && wrangler deploy",
     "test:parity": "python3 tests/parity/parity_check.py",
     "validate": "node scripts/validate.mjs",
-    "test:validator": "node --test scripts/validate.test.mjs",
+    "test:validator": "node --test scripts/validate.test.mjs scripts/traverse.test.mjs",
     "test:a11y": "python3 tests/a11y/axe_check.py",
     "test:perf": "python3 tests/perf/perf_check.py",
     "contrast": "node scripts/contrast.mjs",
     "test:keyboard": "python3 tests/a11y/keyboard_check.py",
-    "identity": "node scripts/identity-colours.mjs"
+    "identity": "node scripts/identity-colours.mjs",
+    "traverse": "node scripts/traverse.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^8.1.6",

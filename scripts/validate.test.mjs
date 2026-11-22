@@ -50,6 +50,8 @@ const FIXTURES = [
   ["place-level", "a spot with no site above it", { "places.json": sub('"level": "spot", "parent_id": "city"', '"level": "spot", "parent_id": "kuru"') }],
   ["place-level", "a realm inside a site", { "places.json": sub('"id": "naimisha", "name": "Naimiṣa", "level": "site", "parent_id": null', '"id": "naimisha", "name": "Naimiṣa", "level": "realm", "parent_id": "city"') }],
   ["unknown-family", "a person in a family line that doesn't exist", { "people.json": sub('"family": "yadava"', '"family": "vrishni"') }],
+  ["assembly-incomplete", "an assembly moment missing a living principal with no reason", { "moments/d.mdx": sub('absent: [{ id: krishna, reason: "Away in Dvārakā at this time." }]\n', "") }],
+  ["assembly-incomplete", "a principal listed both present and absent", { "moments/d.mdx": sub("{ id: krishna, reason", "{ id: karna, reason") }],
   ["moment-at-realm", "a moment set in a whole realm", { "moments/b.mdx": sub("place_id: dvaraka", "place_id: kuru") }],
   ["missing-alt", "a <Beat> without alt text", { "moments/a.mdx": sub('alt="Two warriors face each other." ', "") }],
   ["missing-alt", "a drafted moment without art_alt", { "moments/b.mdx": sub('art_alt: "A figure."\n', "") }],

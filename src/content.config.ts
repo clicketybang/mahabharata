@@ -31,6 +31,7 @@ const moments = defineCollection({
     debate_note: z.string().optional(),
     content_notes: z.array(z.string()).default([]),
     assembly: z.boolean().default(false),
+    absent: z.array(z.object({ id, reason: z.string().min(8) })).default([]), // assembly moments: principals alive but not here, and why (A1)
     quiet: z.boolean().optional(),
     dilemma: z.string().optional(),
     gita_links: z.array(z.string()).default([]),
@@ -56,6 +57,8 @@ const people = defineCollection({
     bio: z.string(),
     identity_colour: z.string().regex(/^#[0-9a-f]{6}$/i), // the individual (A7: never moral); checked by scripts/identity-colours.mjs
     family: id, // birth line → the line pattern in Kāla
+    principal: z.boolean().default(false), // a main thread: must be at every assembly moment while alive, or absent with a reason (A1)
+    minor: z.boolean().default(false), // a one-scene figure: no line in Kāla
     home: id,
     returns_home: z.boolean().default(false),
     death_t: z.number().optional(),
