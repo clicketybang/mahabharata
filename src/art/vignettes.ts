@@ -7,6 +7,10 @@ import { sun, scatter, filler, star } from "./motifs";
 import { fig, type FigureOpts } from "./figure";
 import { tent, chariot, crowdRow } from "./objects";
 import { placeIcon } from "./places";
+import { scenery } from "./scenery";
+
+/** DESIGN TRIAL: "Detailed" pictures (branch design/look-trial) */
+const rich = (): boolean => typeof document !== "undefined" && document.documentElement.dataset.art === "rich";
 
 /** what a composed vignette needs: the place's icon and the cast's figure settings */
 export interface Composition { icon: string; figs: FigureOpts[] }
@@ -15,6 +19,10 @@ const lying = (x: number, y: number, o: FigureOpts) => `<g transform="translate(
 const dog = (x: number, y: number, s = 1) => `<g transform="translate(${x} ${y}) scale(${s})"><path d="M-30 -20 q 10 -14 40 -10 l 12 -14 l 6 10 l 8 2 l -6 12 q -4 6 -10 6 l -2 24 h-8 l -2 -18 h-24 l -4 18 h-8 l 0 -22 q -10 -2 -14 -12 l -6 -10 z" fill="${C.white}" stroke="${C.iron}" stroke-width="2.4" stroke-linejoin="round"/><circle cx="22" cy="-28" r="2" fill="${C.iron}"/></g>`;
 
 export function composed(c: Composition): string {
+  if (rich()) {
+    const n = Math.min(5, c.figs.length), step = n > 1 ? Math.min(140, 520 / (n - 1)) : 0, x0 = 450 - (step * (n - 1)) / 2;
+    return scenery(c.icon) + c.figs.slice(0, n).map((f, i) => `<ellipse cx="${x0 + i * step}" cy="263" rx="34" ry="6" fill="${C.iron}" opacity=".18"/>` + fig({ ...f, weapon: f.weapon ?? (i === 0 && n > 1 ? "point" : "none"), seated: false, detail: true, x: x0 + i * step, y: 262, s: .86, face: n > 1 && i >= n / 2 ? "left" : "right" })).join("");
+  }
   const sky = `<rect width="900" height="300" fill="${C.sky}"/><rect y="220" width="900" height="80" fill="${C.ground}"/>${scatter(14, 0, 900, 10, 190, (x, y, r) => filler(x, y, r * .7), 3)}`;
   const n = Math.min(4, c.figs.length), step = n > 1 ? Math.min(150, 440 / (n - 1)) : 0, x0 = 420 - (step * (n - 1)) / 2;
   const people = c.figs.slice(0, n).map((f, i) => fig({ ...f, weapon: f.weapon ?? "none", seated: false, x: x0 + i * step, y: 268, s: .78, face: n > 1 && i >= n / 2 ? "left" : "right" })).join("");
@@ -22,7 +30,7 @@ export function composed(c: Composition): string {
 }
 
 export function vignette(kind?: string, alt = "", compose?: Composition): string {
-  const bg = `<rect width="900" height="300" fill="${C.sky}"/><rect y="220" width="900" height="80" fill="${C.ground}"/>${scatter(18, 0, 900, 10, 200, (x, y, r) => filler(x, y, r * .7), 5)}`;
+  const bg = rich() ? scenery(compose?.icon ?? "trees") : `<rect width="900" height="300" fill="${C.sky}"/><rect y="220" width="900" height="80" fill="${C.ground}"/>${scatter(18, 0, 900, 10, 200, (x, y, r) => filler(x, y, r * .7), 5)}`;
   const v: Record<string, string> = {
     curse: `${placeIcon("hut", 640, 200, 2.6)}${fig({ x: 330, y: 260, s: .9, skin: SK.karna, cloth: C.madder, cloth2: C.indigo, crown: "mukuta", weapon: "bow" })}${fig({ x: 520, y: 270, s: .85, face: "left", skin: SK.elder, cloth: C.white, cloth2: C.ochre, crown: "topknot", weapon: "point", beard: true })}`,
     omens: `<rect width="900" height="300" fill="${C.wall}"/>${fig({ x: 380, y: 270, s: .95, skin: SK.gandhari, cloth: C.indigoL, cloth2: C.ochre, crown: "female", female: true, veiled: true, weapon: "plead" })}${fig({ x: 520, y: 270, s: .9, face: "left", skin: SK.yudhi, cloth: C.white, cloth2: C.indigo, crown: "topknot", weapon: "point" })}<g transform="translate(700 240)"><path d="M-40 0 h80 l-10 -20 h-60z" fill="${C.madder}" stroke="${C.iron}" stroke-width="2"/><path d="M-10 -20 q 10 -40 0 -60 q 30 30 10 60z" fill="${C.ochreL}" stroke="${C.iron}" stroke-width="2"/></g>`,
@@ -46,5 +54,7 @@ export function vignette(kind?: string, alt = "", compose?: Composition): string
     hanuman: `${bg}${placeIcon("mountain", 760, 180, 3.4)}<path d="M548 268 C 480 300 420 230 360 262" fill="none" stroke="${C.iron}" stroke-width="13" stroke-linecap="round"/><path d="M548 268 C 480 300 420 230 360 262" fill="none" stroke="${SK.monkey}" stroke-width="8" stroke-linecap="round"/>${fig({ x: 600, y: 274, s: .8, face: "left", skin: SK.monkey, cloth: C.madder, cloth2: C.ochre, crown: "mukuta", weapon: "none", seated: true })}${fig({ x: 300, y: 268, s: .82, skin: SK.bhima, cloth: C.indigo, cloth2: C.madder, crown: "mukuta", weapon: "grab", mustache: true })}`,
   };
   const label = alt ? ` role="img" aria-label="${alt.replace(/"/g, "&quot;")}"` : ` aria-hidden="true"`;
-  return `<svg class="stub-art" viewBox="0 0 900 300" preserveAspectRatio="xMidYMid slice"${label}>${defs()}${(kind && v[kind]) || (compose ? composed(compose) : bg)}</svg>`;
+  let art = (kind && v[kind]) || (compose ? composed(compose) : bg);
+  if (rich() && kind && v[kind]) art = art.split(`<rect width="900" height="300" fill="${C.wall}"/>`).join(scenery("palace"));
+  return `<svg class="stub-art" viewBox="0 0 900 300" preserveAspectRatio="xMidYMid slice"${label}>${defs()}${art}</svg>`;
 }

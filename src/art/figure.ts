@@ -9,7 +9,7 @@ export type Weapon = "bow" | "mace" | "reins" | "dice" | "point" | "plead" | "fi
 export interface FigureOpts {
   skin: string; cloth?: string; cloth2?: string; face?: "left" | "right";
   seated?: boolean; female?: boolean; loose?: boolean; crown?: Crown; weapon?: Weapon;
-  halo?: boolean; armour?: boolean; beard?: boolean; mustache?: boolean; blind?: boolean; veiled?: boolean; arrow?: boolean;
+  halo?: boolean; armour?: boolean; detail?: boolean; beard?: boolean; mustache?: boolean; blind?: boolean; veiled?: boolean; arrow?: boolean;
   id?: string; x?: number; y?: number; s?: number;
 }
 
@@ -78,5 +78,6 @@ export function fig(o: FigureOpts): string {
   } else if (w === "fist") { back = arm(-10, -120, -22, -88); arms = `<g ${o.id ? `id="${o.id}-arm"` : ""}>${arm(12, -120, 30, -176)}<circle cx="31" cy="-180" r="8" fill="${skin}" stroke="${C.iron}" stroke-width="${S}"/></g>`;
   } else if (w === "grab") { back = arm(-10, -120, -18, -90); arms = arm(12, -120, 60, -128) + bangle(54, -127);
   } else { back = arm(-10, -120, -18, -84); arms = arm(12, -120, 22, -84) + bangle(20, -90); }
-  return `<g ${id} transform="translate(${o.x || 0} ${o.y || 0}) scale(${o.s || 1})${flip}">${legs}<g transform="translate(0 ${upperY})">${halo}${back}${torso}${sash}${head}${crown}${arms}</g></g>`;
+  const extra = o.detail ? `<path d="M-14 -124 Q0 -96 14 -124" fill="none" stroke="${C.white}" stroke-width="2.6" stroke-dasharray="1.5 3.5"/><path d="M-21 -70 H21" stroke="${C.ochreL}" stroke-width="3" stroke-dasharray="3 3"/>${o.crown === "kirita" || o.crown === "krishna" ? `<path d="M-9 -180 h18" stroke="${C.white}" stroke-width="2.4" stroke-dasharray="1.5 4"/>` : ""}<circle cx="-4" cy="-133" r="2.6" fill="${C.ochreL}" stroke="${C.iron}" stroke-width=".8"/>` : "";
+  return `<g ${id} transform="translate(${o.x || 0} ${o.y || 0}) scale(${o.s || 1})${flip}">${legs}<g transform="translate(0 ${upperY})">${halo}${back}${torso}${sash}${head}${crown}${extra}${arms}</g></g>`;
 }

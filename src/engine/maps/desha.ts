@@ -30,9 +30,9 @@ export function renderDesha(): void {
   s += `<path d="M560 140 C 540 220 560 300 590 350 C 640 430 720 480 800 520 C 860 550 900 580 930 600" fill="none" stroke="${C.river}" stroke-width="7" stroke-linecap="round"/>
    <path d="M470 140 C 450 220 440 300 440 360 C 440 420 450 470 560 500 C 620 516 680 500 720 490" fill="none" stroke="${C.river}" stroke-width="5" stroke-linecap="round"/>
    <path d="M330 150 C 320 210 300 260 280 300 C 250 360 230 400 200 450" fill="none" stroke="${C.river}" stroke-width="4" stroke-dasharray="10 8" stroke-linecap="round"/>
-   <text x="616" y="410" font-family="Kalam" font-size="15" fill="${C.ink}" opacity=".6" transform="rotate(32 616 410)">Gaṅgā</text>
-   <text x="420" y="400" font-family="Kalam" font-size="14" fill="${C.ink}" opacity=".6" transform="rotate(-80 420 400)">Yamunā</text>
-   <text x="228" y="380" font-family="Kalam" font-size="14" fill="${C.ink}" opacity=".5" transform="rotate(-60 228 380)">Sarasvatī</text>`;
+   <text x="616" y="410" style="font-family:var(--fl)" font-size="15" fill="${C.ink}" opacity=".6" transform="rotate(32 616 410)">Gaṅgā</text>
+   <text x="420" y="400" style="font-family:var(--fl)" font-size="14" fill="${C.ink}" opacity=".6" transform="rotate(-80 420 400)">Yamunā</text>
+   <text x="228" y="380" style="font-family:var(--fl)" font-size="14" fill="${C.ink}" opacity=".5" transform="rotate(-60 228 380)">Sarasvatī</text>`;
   // terrain: desert dunes, Vindhya hills, forests, region names
   s += scatter(34, 110, 290, 400, 560, (x, y) => `<path d="M${x - 12} ${y} q 12 -9 24 0" fill="none" stroke="${C.ochre}" stroke-width="2" opacity=".55"/>`, 6);
   for (let x = 300; x < 780; x += 30) { const h = 12 + ((x * 13) % 9); s += `<path d="M${x - 18} ${600 - (x - 300) * .06} q 18 -${h * 2} 36 0" fill="${C.ochre}" opacity=".5" stroke="${C.iron}" stroke-width="1.2"/>`; }
@@ -61,15 +61,15 @@ export function renderDesha(): void {
     s += `<g class="dplace" data-place="${id}" role="button" tabindex="0" aria-label="${lit ? p.n : "Unexplored place"}">${lit ? `<circle cx="${x}" cy="${y}" r="30" fill="url(#lampG)"/>` : ""}
       <circle cx="${x}" cy="${y}" r="21" fill="${C.paper}" stroke="${lit ? C.gold : C.iron}" stroke-opacity="${lit ? 1 : .55}" stroke-width="${lit ? 3 : 2}" ${CERT_DASH[story.cert[id]] ? `stroke-dasharray="${CERT_DASH[story.cert[id]]}"` : ""}/>${placeIcon(p.icon, x, y + 1, .62)}
       ${lit ? "" : `<g opacity=".8">${[[-14, -6], [0, -12], [14, -6], [-6, 6], [10, 6]].map(([dx, dy]) => `<circle cx="${x + dx}" cy="${y + dy}" r="10" fill="#d9ccad"/>`).join("")}</g>`}
-      ${lit ? `<text x="${x}" y="${y + 38}" text-anchor="middle" font-family="Kalam" font-size="14" font-weight="700" fill="${C.gold}">${p.short || placeName(id)}</text>` : ""}
+      ${lit ? `<text x="${x}" y="${y + 38}" text-anchor="middle" style="font-family:var(--fl)" font-size="14" font-weight="700" fill="${C.gold}">${p.short || placeName(id)}</text>` : ""}
       ${id === cur ? `<circle class="ring" cx="${x}" cy="${y}" r="14" fill="none" stroke="${C.ochreL}" stroke-width="3"/>` : ""}</g>`;
   });
   // compass + cartouche
   s += `<g transform="translate(860 800)"><circle r="44" fill="${C.paper}" stroke="${C.gold}" stroke-width="2"/>${[0, 90, 180, 270].map(a => `<path transform="rotate(${a})" d="M0 -40 L8 0 L0 6 L-8 0Z" fill="${a ? C.ochre : C.madder}" stroke="${C.iron}" stroke-width="1.2"/>`).join("")}<text y="-48" text-anchor="middle" font-family="Gotu" font-size="14" fill="${C.ink}">N</text></g>
-   <g transform="translate(150 820)"><rect x="-110" y="-30" width="220" height="56" rx="8" fill="${C.paper}" stroke="${C.gold}" stroke-width="2"/><text y="-2" text-anchor="middle" font-family="Tiro Devanagari Sanskrit" font-size="24" fill="${C.gold}">भारतवर्ष</text><text y="18" text-anchor="middle" font-family="Kalam" font-size="13" fill="${C.ink}" opacity=".7">${visitedPlaces.size} lands walked</text></g>`;
+   <g transform="translate(150 820)"><rect x="-110" y="-30" width="220" height="56" rx="8" fill="${C.paper}" stroke="${C.gold}" stroke-width="2"/><text y="-2" text-anchor="middle" font-family="Tiro Devanagari Sanskrit" font-size="24" fill="${C.gold}">भारतवर्ष</text><text y="18" text-anchor="middle" style="font-family:var(--fl)" font-size="13" fill="${C.ink}" opacity=".7">${visitedPlaces.size} lands walked</text></g>`;
   // certainty legend
-  const key = (dx: number, label: string, dash: string) => `<g transform="translate(${dx} 0)"><circle r="9" fill="${C.paper}" stroke="${C.iron}" stroke-width="2" ${dash ? `stroke-dasharray="${dash}"` : ""}/><text x="15" y="5" font-family="Kalam" font-size="13" fill="${C.ink}">${label}</text></g>`;
-  s += `<g transform="translate(370 832)" aria-hidden="true"><rect x="-118" y="-36" width="250" height="66" rx="8" fill="${C.paper}" stroke="${C.gold}" stroke-width="1.5"/><text x="7" y="-16" text-anchor="middle" font-family="Kalam" font-size="13" fill="${C.ink}" opacity=".75">how sure is the location?</text>
+  const key = (dx: number, label: string, dash: string) => `<g transform="translate(${dx} 0)"><circle r="9" fill="${C.paper}" stroke="${C.iron}" stroke-width="2" ${dash ? `stroke-dasharray="${dash}"` : ""}/><text x="15" y="5" style="font-family:var(--fl)" font-size="13" fill="${C.ink}">${label}</text></g>`;
+  s += `<g transform="translate(370 832)" aria-hidden="true"><rect x="-118" y="-36" width="250" height="66" rx="8" fill="${C.paper}" stroke="${C.gold}" stroke-width="1.5"/><text x="7" y="-16" text-anchor="middle" style="font-family:var(--fl)" font-size="13" fill="${C.ink}" opacity=".75">how sure is the location?</text>
     <g transform="translate(-100 10)">${key(0, "textual", CERT_DASH.textual)}${key(82, "traditional", CERT_DASH.traditional)}${key(176, "conjectural", CERT_DASH.conjectural)}</g></g>`;
   $("#deshaMap").innerHTML = `<svg id="deshaSvg" viewBox="0 0 1000 900" role="group" aria-label="Map of Bhāratavarṣa">${s}</svg>`;
   $("#deshaText").innerHTML = `<h2>Deśa, the land, as a list</h2><p>${visitedPlaces.size} lands walked. Certainty of each location: textual, traditional or conjectural.</p><ul>${sites.map(([id, p]) => {

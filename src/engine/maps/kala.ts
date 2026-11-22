@@ -40,7 +40,7 @@ export function renderKala(): void {
   // eras ribbon
   const eras: { e: string; a: number; b: number }[] = [];
   TL.forEach((n, i) => { const last = eras.at(-1); if (!last || last.e !== n.era) eras.push({ e: n.era, a: i, b: i }); else last.b = i; });
-  eras.forEach((r, k) => { const a = X(r.a) - colW / 2 + 6, b = X(r.b) + colW / 2 - 6; s += `<path d="M${a} 26 H${b}" stroke="${k % 2 ? C.gold : C.rose}" stroke-width="10" stroke-linecap="round" opacity=".55"/><text x="${(a + b) / 2}" y="50" text-anchor="middle" font-family="Kalam" font-size="15" fill="${C.ink}" opacity=".8">${r.e}</text>`; });
+  eras.forEach((r, k) => { const a = X(r.a) - colW / 2 + 6, b = X(r.b) + colW / 2 - 6; s += `<path d="M${a} 26 H${b}" stroke="${k % 2 ? C.gold : C.rose}" stroke-width="10" stroke-linecap="round" opacity=".55"/><text x="${(a + b) / 2}" y="50" text-anchor="middle" style="font-family:var(--fl)" font-size="15" fill="${C.ink}" opacity=".8">${r.e}</text>`; });
   // "now" lamp
   if (curIdx >= 0) s += `<line class="pulse" x1="${X(curIdx)}" x2="${X(curIdx)}" y1="${y0}" y2="${y0 + bandH * BAND_ORDER.length}" stroke="${C.ochreL}" stroke-width="2" stroke-dasharray="3 6"/><g transform="translate(${X(curIdx)} ${y0 - 4})"><circle r="16" fill="url(#lampG)"/><path d="M-9 0 h18 q-2 7 -9 7 q-7 0 -9 -7z" fill="${C.madder}" stroke="${C.iron}"/><path d="M0 -1 q-5 -7 0 -14 q5 7 0 14z" fill="${C.ochreL}"/></g>`;
   // lines: dim base, then identity colour + pattern where walked
@@ -86,7 +86,7 @@ export function renderKala(): void {
     const medOp = ui.kalaHL ? (ui.kalaHL === pid ? 1 : .25) : focusSet.has(pid) ? 1 : .45;
     // D6 at scale: full portraits for the current cast (or the followed life); an initial for everyone else, to keep the chart light
     const full = ui.kalaHL ? ui.kalaHL === pid : focusSet.has(pid);
-    s += `<g data-person="${pid}" role="button" tabindex="0" aria-label="${ui.kalaHL === pid ? "Show all lives" : `Follow ${PEOPLE[pid].n}’s river`}" style="cursor:pointer" opacity="${medOp}"><circle cx="${p[0] - 40}" cy="${p[1]}" r="17" fill="${PEOPLE[pid].line}"/>${full ? `<svg x="${p[0] - 56}" y="${p[1] - 16}" width="32" height="32">${headSVG(pid).replace("<svg ", "<svg width='32' height='32' ")}</svg>` : `<text x="${p[0] - 40}" y="${p[1] + 5}" text-anchor="middle" font-family="Kalam" font-size="15" fill="${C.paper}">${PEOPLE[pid].n.charAt(0)}</text>`}<circle cx="${p[0] - 40}" cy="${p[1]}" r="16" fill="none" stroke="${PEOPLE[pid].line}" stroke-width="3"/></g>`;
+    s += `<g data-person="${pid}" role="button" tabindex="0" aria-label="${ui.kalaHL === pid ? "Show all lives" : `Follow ${PEOPLE[pid].n}’s river`}" style="cursor:pointer" opacity="${medOp}"><circle cx="${p[0] - 40}" cy="${p[1]}" r="17" fill="${PEOPLE[pid].line}"/>${full ? `<svg x="${p[0] - 56}" y="${p[1] - 16}" width="32" height="32">${headSVG(pid).replace("<svg ", "<svg width='32' height='32' ")}</svg>` : `<text x="${p[0] - 40}" y="${p[1] + 5}" text-anchor="middle" style="font-family:var(--fl)" font-size="15" fill="${C.paper}">${PEOPLE[pid].n.charAt(0)}</text>`}<circle cx="${p[0] - 40}" cy="${p[1]}" r="16" fill="none" stroke="${PEOPLE[pid].line}" stroke-width="3"/></g>`;
   });
   $("#kalaScroll").innerHTML = `<svg id="kalaSvg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">${s}</svg>`;
   // fixed place labels
@@ -94,7 +94,7 @@ export function renderKala(): void {
   let L = `<svg width="${LW}" height="${H}">${defs()}<rect width="${LW}" height="${H}" fill="${C.paper}"/>`;
   BAND_ORDER.forEach((pl, b) => {
     const y = y0 + b * bandH + bandH / 2;
-    L += `<g data-kplace="${pl}" role="button" tabindex="0" aria-label="${story.places[pl].n}: show moments here" style="cursor:pointer"><rect x="0" y="${y0 + b * bandH}" width="${LW}" height="${bandH}" fill="${pl === ui.kalaPlace ? C.ochreL : (b % 2 ? C.paper2 : C.paper)}" opacity="${pl === ui.kalaPlace ? .8 : .6}"/>${placeIcon(story.places[pl].icon, 24, y, .62)}${LW < 60 ? "" : `<text x="44" y="${y + 5}" font-family="Kalam" font-size="13" fill="${C.ink}">${story.places[pl].short || placeName(pl)}</text>`}</g>`;
+    L += `<g data-kplace="${pl}" role="button" tabindex="0" aria-label="${story.places[pl].n}: show moments here" style="cursor:pointer"><rect x="0" y="${y0 + b * bandH}" width="${LW}" height="${bandH}" fill="${pl === ui.kalaPlace ? C.ochreL : (b % 2 ? C.paper2 : C.paper)}" opacity="${pl === ui.kalaPlace ? .8 : .6}"/>${placeIcon(story.places[pl].icon, 24, y, .62)}${LW < 60 ? "" : `<text x="44" y="${y + 5}" style="font-family:var(--fl)" font-size="13" fill="${C.ink}">${story.places[pl].short || placeName(pl)}</text>`}</g>`;
   });
   $("#kalaLabels").innerHTML = L + "</svg>";
   // safety net: a label that still doesn't fit its column is narrowed to fit, never cut off
