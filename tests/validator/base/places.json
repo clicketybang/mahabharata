@@ -1,0 +1,5 @@
+[
+  { "id": "hall", "name": "Hall", "level": "spot", "certainty": "textual" },
+  { "id": "field", "name": "Kurukṣetra", "level": "site", "certainty": "textual" },
+  { "id": "dvaraka", "name": "Dvārakā", "level": "site", "certainty": "traditional" }
+]
