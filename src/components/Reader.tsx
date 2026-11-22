@@ -11,8 +11,8 @@ export default function Reader({ data }: { data: ReaderData }) {
 
   return (
     <>
-      <div className="topbar">
-        <div className="brand" id="brand"><span className="dev">महाभारत</span><small id="themeName"></small></div>
+      <header className="topbar">
+        <button className="brand" id="brand" title="Back to the title page"><span className="dev" lang="sa">महाभारत</span><small id="themeName"></small></button>
         <div className="spacer"></div>
         <button className="tbtn" id="bmBtn" title="Bookmark this moment" style={{ display: "none" }}>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path d="M6 3h12v18l-6-4-6 4z" /></svg>
@@ -22,51 +22,51 @@ export default function Reader({ data }: { data: ReaderData }) {
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z M9 3v15 M15 6v15" /></svg>
           <span className="lbl">Maps</span>
         </button>
-      </div>
+      </header>
 
       <main id="app"></main>
       <nav id="crumbs" aria-label="Return path"></nav>
 
-      <div id="maps">
+      <div id="maps" role="dialog" aria-modal="true" aria-label="Maps">
         <div className="mtop">
-          <div className="mtabs" id="mtabs">
-            <button className="mtab on" data-t="kala"><span className="dev">काल</span><span className="en">KĀLA · TIME</span></button>
-            <button className="mtab" data-t="desha"><span className="dev">देश</span><span className="en">DEŚA · LAND</span></button>
-            <button className="mtab" data-t="patra"><span className="dev">पात्र</span><span className="en">PĀTRA · SOULS</span></button>
-            <button className="mtab" data-t="marga"><span className="dev">मार्ग</span><span className="en">MĀRGA · PATH</span></button>
-            <button className="mtab" data-t="smriti"><span className="dev">स्मृति</span><span className="en">SMṚTI · MARKS</span></button>
+          <div className="mtabs" id="mtabs" role="tablist" aria-label="Maps">
+            <button className="mtab on" data-t="kala" role="tab" aria-selected="true" aria-controls="kala"><span className="dev" lang="sa">काल</span><span className="en">KĀLA · TIME</span></button>
+            <button className="mtab" data-t="desha" role="tab" aria-selected="false" aria-controls="desha" tabIndex={-1}><span className="dev" lang="sa">देश</span><span className="en">DEŚA · LAND</span></button>
+            <button className="mtab" data-t="patra" role="tab" aria-selected="false" aria-controls="patra" tabIndex={-1}><span className="dev" lang="sa">पात्र</span><span className="en">PĀTRA · SOULS</span></button>
+            <button className="mtab" data-t="marga" role="tab" aria-selected="false" aria-controls="marga" tabIndex={-1}><span className="dev" lang="sa">मार्ग</span><span className="en">MĀRGA · PATH</span></button>
+            <button className="mtab" data-t="smriti" role="tab" aria-selected="false" aria-controls="smriti" tabIndex={-1}><span className="dev" lang="sa">स्मृति</span><span className="en">SMṚTI · MARKS</span></button>
           </div>
           <button className="mclose" id="mapClose" aria-label="Close maps">×</button>
         </div>
         <div className="mbody">
-          <div className="mview" id="kala"><div id="kalaLabels"></div><div id="kalaScroll"></div></div>
-          <div className="mview" id="desha"></div>
-          <div className="mview" id="patra"></div>
-          <div className="mview" id="marga"></div>
-          <div className="mview" id="smriti"></div>
-          <div className="info" id="info"></div>
+          <div className="mview" id="kala" role="tabpanel" aria-label="Kāla, time"><div id="kalaLabels" aria-hidden="true"></div><div id="kalaScroll" tabIndex={0} role="group" aria-label="Kāla chart: scroll sideways through time"></div><div id="kalaText" className="sr-only"></div></div>
+          <div className="mview" id="desha" role="tabpanel" aria-label="Deśa, land" tabIndex={0}><div id="deshaMap"></div><div id="deshaText" className="sr-only"></div></div>
+          <div className="mview" id="patra" role="tabpanel" aria-label="Pātra, souls"></div>
+          <div className="mview" id="marga" role="tabpanel" aria-label="Mārga, your path"></div>
+          <div className="mview" id="smriti" role="tabpanel" aria-label="Smṛti, bookmarks"></div>
+          <div className="info" id="info" role="region" aria-label="Details" aria-live="polite"></div>
         </div>
       </div>
 
-      <div id="modal">
+      <div id="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle">
         <div className="box">
           <h4 id="mTitle"></h4><p id="mSub"></p>
-          <textarea id="mText" placeholder="A note to your future self…"></textarea>
+          <textarea id="mText" placeholder="A note to your future self…" aria-label="Your note"></textarea>
           <div className="row"><button className="kbtn" id="mCancel">Skip</button><button className="kbtn primary" id="mOk">Save</button></div>
         </div>
       </div>
-      <div id="toast"></div>
-      <div id="soul"></div>
+      <div id="toast" role="status" aria-live="polite"></div>
+      <div id="soul" role="dialog" aria-modal="true"></div>
       <div id="gate" role="dialog" aria-modal="true" aria-labelledby="gateT">
         <div className="gbox"><div className="gin">
           <div className="dev" lang="sa" style={{ fontSize: 30, color: "var(--accent)" }}>महाभारत</div>
-          <h3 id="gateT">Before you enter</h3>
+          <h2 id="gateT">Before you enter</h2>
           <p>This is the Mahābhārata as the epic tells it, for readers <b>21 and over</b>. Its scenes include war and killing, blood, the assault and humiliation of a woman, curses, grief and death, shown plainly as part of the story.</p>
           <p className="hand" style={{ color: "var(--muted)" }}>This notice appears once.</p>
           <div className="row"><button className="kbtn" id="gateNo">Not now</button><button className="kbtn primary" id="gateYes">I am 21+ — enter the epic</button></div>
         </div></div>
       </div>
-      <aside id="drawer" aria-label="Sources and tellings"></aside>
+      <div id="drawer" role="dialog" aria-modal="true" aria-label="Sources and tellings"></div>
     </>
   );
 }

@@ -12,14 +12,18 @@ import type { Choice, BuiltScene, DraftedScene } from "./types";
 
 export const SUB = "painted in the Kalamkari of Srikalahasti";
 
+/** a tappable portrait (Rule 6): opens that person's story */
+export const med = (id: string, extra = ""): string =>
+  `<div class="med" data-soul="${id}" role="button" tabindex="0" aria-label="Open ${story.people[id].n}’s story" title="${story.people[id].n} — open their story"${extra}>${headSVG(id)}</div>`;
+
 export function meds(ids: string[]): string {
-  return `<div class="meds">${ids.map(id => `<div class="med" data-soul="${id}" title="${story.people[id].n} — open their story">${headSVG(id)}</div>`).join("")}</div>`;
+  return `<div class="meds">${ids.map(id => med(id)).join("")}</div>`;
 }
 
 export function renderHome(): string {
   return `<section class="page on"><div class="home"><div class="kframe">${BANDS}<div class="home-inner">
    <div class="dev big">महाभारत</div><h1>Mahābhārata</h1><div class="sub">${SUB}</div>
-   <svg class="home-art" viewBox="0 0 760 330">${defs()}<rect width="760" height="330" fill="${C.sky}"/><rect y="250" width="760" height="80" fill="${C.ground}"/>
+   <svg class="home-art" viewBox="0 0 760 330" role="img" aria-label="Arjuna and Kṛṣṇa in their chariot beneath the sun, drawn in the manner of a Srikalahasti Kalamkari cloth">${defs()}<rect width="760" height="330" fill="${C.sky}"/><rect y="250" width="760" height="80" fill="${C.ground}"/>
      ${sun(640, 80, 40)}${bird(140, 70)}${scatter(16, 20, 740, 20, 220, (x, y, r) => filler(x, y, r * .8), 4)}
      <g transform="translate(-40 -40) scale(.95)">${chariot({ x: 300, y: 330, banner: "hanuman", cap: C.madder, cap2: C.indigo })}
      ${fig({ x: 352, y: 234, s: .92, skin: SK.krishna, cloth: C.ochre, cloth2: C.madder, crown: "krishna", weapon: "reins", halo: true })}
@@ -35,12 +39,12 @@ function choiceCard(c: Choice, i: number): string {
   const icon = c.by === "character" ? headSVG(c.ref) : placeBadge(c.ref);
   const label = c.by === "character" ? `Follow ${story.people[c.ref].n}` : `Go to ${story.places[c.ref].n.split(",")[0]}`;
   return `<button class="choice" data-choose="${i}" ${dis ? "disabled" : ""}>${seen ? `<span class="seen">✓ walked</span>` : ""}
-    <div class="big">${icon}</div><div class="by">${label}</div><h4>${n.title}</h4><div class="when">${dis ? "not yet painted" : placeName(n.place)}</div></button>`;
+    <div class="big">${icon}</div><div class="by">${label}</div><h3>${n.title}</h3><div class="when">${dis ? "not yet painted" : placeName(n.place)}</div></button>`;
 }
 
 function choicesHTML(id: string): string {
   const cs = choicesFor(id); if (!cs.length) return "";
-  return `<section class="choices"><div class="hand">— the river divides —</div><h3>Whom will you follow?</h3><div class="why">Every path leads forward in time.</div>
+  return `<section class="choices"><div class="hand">— the river divides —</div><h2>Whom will you follow?</h2><div class="why">Every path leads forward in time.</div>
    <div class="choice-grid">${cs.map(choiceCard).join("")}</div></section>`;
 }
 
@@ -60,7 +64,7 @@ function ribbon(): string {
 function renderDrafted(id: string, sc: DraftedScene): string {
   const n = story.node[id];
   return `<section class="page on">${ribbon()}<div class="stub"><div class="kframe">${BANDS}<div class="stub-inner">
-     ${vignette(sc.art)}<div class="scene-head" style="padding:18px 0 0"><div class="parva">${sc.parva} · ${placeName(n.place)}</div><h2>${n.title}</h2><div class="dev" lang="sa">${sc.dev}</div>${meds(n.cast)}${headButtons(id)}</div>
+     ${vignette(sc.art, sc.artAlt)}<div class="scene-head" style="padding:18px 0 0"><div class="parva">${sc.parva} · ${placeName(n.place)}</div><h1 tabindex="-1">${n.title}</h1><div class="dev" lang="sa">${sc.dev}</div>${meds(n.cast)}${headButtons(id)}</div>
      ${pathNoteHTML(id)}<p class="text">${sc.text}</p><div class="unwritten">✎ Drafted. The painted, scroll-animated version of this page comes in a later sprint.</div>
    </div></div></div>${choicesHTML(id)}</section>`;
 }
@@ -69,12 +73,12 @@ function renderBuilt(id: string, sc: BuiltScene): string {
   const n = story.node[id], m = story.meta[id];
   const beats = sc.beats;
   return `<section class="page on">${ribbon()}
-   <header class="scene-head"><div class="parva">${sc.parva} · ${placeName(n.place)}</div><h2>${n.title}</h2><div class="dev" lang="sa">${sc.dev}</div>
+   <header class="scene-head"><div class="parva">${sc.parva} · ${placeName(n.place)}</div><h1 tabindex="-1">${n.title}</h1><div class="dev" lang="sa">${sc.dev}</div>
      <p class="intro">${sc.intro}</p>${meds(n.cast)}${headButtons(id)}${pathNoteHTML(id)}<div class="scrollhint">scroll ↓ to unroll · scroll ↑ to go back</div></header>
    <div class="scrolly" id="scrolly" style="height:${sc.len * 100}vh"><div class="sticky"><div class="stage kframe" id="stage">${BANDS}
-     <svg class="world" id="world" preserveAspectRatio="xMidYMid slice" role="img" aria-labelledby="capLive">${sc.world()}</svg>
+     <svg class="world" id="world" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${sc.world()}</svg>
      ${sc.day ? `<div class="daylabel">${sc.day}</div>` : ""}<div class="prog" role="tablist" aria-label="Scene beats"><span class="updown" aria-hidden="true">↑↓</span>${beats.map((b, i) => `<i role="tab" tabindex="0" aria-label="Go to: ${b.title}" data-beat="${i}"></i>`).join("")}</div>
-     <div class="captions" id="capLive" aria-live="polite">${beats.map(b => `<div class="cap"><div class="ch"><b>${b.title}</b><span class="dev" lang="sa">${b.dev}</span>${m.narr ? `<span class="who" title="Who is telling this">🗣 ${m.narr}</span>` : ""}${b.cast.length ? `<span class="capcast">${b.cast.map(id => `<div class="med" data-soul="${id}" tabindex="0" role="button" aria-label="Open ${story.people[id].n}’s story">${headSVG(id)}</div>`).join("")}</span>` : ""}</div><p>${b.html}</p></div>`).join("")}</div>
+     <div class="captions" id="capLive" aria-live="polite">${beats.map(b => `<div class="cap"><div class="ch"><b>${b.title}</b><span class="dev" lang="sa">${b.dev}</span>${m.narr ? `<span class="who" title="Who is telling this">🗣 ${m.narr}</span>` : ""}${b.cast.length ? `<span class="capcast">${b.cast.map(id => med(id)).join("")}</span>` : ""}</div><p>${b.html}</p><p class="sr-only">In the painting: ${b.alt}</p></div>`).join("")}</div>
    </div></div></div>${choicesHTML(id)}</section>`;
 }
 

@@ -19,6 +19,7 @@
      edge-direction           a memory edge points forward, or an omen/fulfilment edge points backward
      place-certainty          a place lacks a certainty flag (textual | traditional | conjectural)
      built-incomplete         a built (scroll-animated) moment lacks camera keyframes, length or beats
+     missing-alt              a <Beat> lacks alt text, or a drafted moment lacks art_alt (screen readers; Sprint 2)
    Warnings (do not fail): branch-thread-ends — a branch has no later moment, so no choice is shown.
    ===================================================================== */
 import fs from "node:fs";
@@ -43,7 +44,8 @@ function parseMDX(file) {
 function bodyRefs(body) {
   const beats = [...body.matchAll(/<Beat\b([^>]*)>/g)].map(b => {
     const cast = b[1].match(/cast=\{(\[[^\]]*\])\}/);
-    return { cast: cast ? JSON.parse(cast[1]) : [] };
+    const alt = b[1].match(/\balt="([^"]*)"/);
+    return { cast: cast ? JSON.parse(cast[1]) : [], alt: alt ? alt[1].trim() : "" };
   });
   const jumps = [...body.matchAll(/<Jump\b([^>]*)>/g)].map(j => ({
     to: j[1].match(/to="([^"]+)"/)?.[1],
@@ -104,7 +106,9 @@ export function validate(contentDir, opts = {}) {
     if (d.status === "built") {
       if (!Array.isArray(d.cams) || d.cams.length < 2 || typeof d.len !== "number" || m.beats.length === 0)
         err("built-incomplete", at, "a built scene needs cams (≥2 keyframes), len and at least one <Beat>");
+      m.beats.forEach((b, i) => { if (!b.alt) err("missing-alt", `${at} beat ${i + 1}`, "every <Beat> needs alt text describing the painting"); });
     }
+    if (d.status === "drafted" && !(typeof d.art_alt === "string" && d.art_alt.trim())) err("missing-alt", at, "a drafted moment needs art_alt describing its vignette");
   }
 
   /* the rule of the river: branches and generated choices */

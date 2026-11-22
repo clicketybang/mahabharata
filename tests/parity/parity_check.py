@@ -56,8 +56,8 @@ def run(viewport, label):
         check(f"{label}: 21+ gate appears before entering a scene", page.is_visible("#gate.on"))
         shot(page, f"{label}-02-gate")
         page.click("#gateYes")
-        page.wait_for_selector(".scene-head h2")
-        check(f"{label}: gate admits to the dice hall", page.inner_text(".scene-head h2") == "The Game of Dice")
+        page.wait_for_selector(".scene-head h1")
+        check(f"{label}: gate admits to the dice hall", page.inner_text(".scene-head h1") == "The Game of Dice")
         check(f"{label}: gate consent remembered", page.evaluate("localStorage.getItem('m6.consent')") == "true")
 
         # captions + who is speaking + portraits
@@ -76,31 +76,31 @@ def run(viewport, label):
         y_before = page.evaluate("scrollY")
         page.click(".cap.on a.jump[data-to='karna-curse']")
         page.wait_for_timeout(300)
-        check(f"{label}: jump opens the curse (drafted page)", page.inner_text(".scene-head h2") == "The Brahmin’s Curse")
+        check(f"{label}: jump opens the curse (drafted page)", page.inner_text(".scene-head h1") == "The Brahmin’s Curse")
         check(f"{label}: threshold ribbon says memory", "stepped into a memory" in page.inner_text(".thr-ribbon"))
         check(f"{label}: breadcrumb return bar visible", page.is_visible("#crumbs.on"))
         shot(page, f"{label}-04-memory")
         page.click("#crumbs .ret")
         page.wait_for_timeout(400)
         y_after = page.evaluate("scrollY")
-        check(f"{label}: return restores the dice hall and scroll position", page.inner_text(".scene-head h2") == "The Game of Dice" and abs(y_after - y_before) < 4, f"{y_before} → {y_after}")
+        check(f"{label}: return restores the dice hall and scroll position", page.inner_text(".scene-head h1") == "The Game of Dice" and abs(y_after - y_before) < 4, f"{y_before} → {y_after}")
 
         # generated choices
         page.evaluate("document.querySelector('.choices').scrollIntoView()")
         page.wait_for_timeout(200)
-        titles = [e.inner_text() for e in page.query_selector_all(".choice h4")]
+        titles = [e.inner_text() for e in page.query_selector_all(".choice h3")]
         check(f"{label}: dice hall choices generated forward in time", titles == ["The Blind King’s Boons", "Jackals at the Fire", "The Blind King’s Boons"], json.dumps(titles, ensure_ascii=False))
         shot(page, f"{label}-05-choices")
         page.click(".choice[data-choose='1']")
         page.wait_for_timeout(300)
-        check(f"{label}: choosing 'Go to Inner Palace' opens the omens", page.inner_text(".scene-head h2") == "Jackals at the Fire")
+        check(f"{label}: choosing 'Go to Inner Palace' opens the omens", page.inner_text(".scene-head h1") == "Jackals at the Fire")
         check(f"{label}: inline path note offered", page.is_visible(".pathnote"))
         page.fill("#pnInput", "to hear the omens")
         page.click("#pnSave")
 
         # unpainted destination shows disabled
         page.goto(f"http://127.0.0.1:{PORT}/#kcamp-night")
-        page.reload(); page.wait_for_selector(".scene-head h2")
+        page.reload(); page.wait_for_selector(".scene-head h1")
         dis = page.query_selector_all(".choice[disabled]")
         check(f"{label}: unwritten destinations are disabled 'not yet painted'", len(dis) == 2 and all("not yet painted" in d.inner_text() for d in dis))
 
@@ -131,7 +131,7 @@ def run(viewport, label):
         # bookmark persists across reload
         scroll_scene_to(page, 0.55)
         page.click("#bmBtn"); page.fill("#mText", "the unanswered question"); page.click("#mOk")
-        page.reload(); page.wait_for_selector(".scene-head h2")
+        page.reload(); page.wait_for_selector(".scene-head h1")
 
         # maps
         page.click("#mapBtn"); page.wait_for_selector("#maps.on")

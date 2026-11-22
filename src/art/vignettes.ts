@@ -5,7 +5,7 @@ import { fig } from "./figure";
 import { tent } from "./objects";
 import { placeIcon } from "./places";
 
-export function vignette(kind?: string): string {
+export function vignette(kind?: string, alt = ""): string {
   const bg = `<rect width="900" height="300" fill="${C.sky}"/><rect y="220" width="900" height="80" fill="${C.ground}"/>${scatter(18, 0, 900, 10, 200, (x, y, r) => filler(x, y, r * .7), 5)}`;
   const v: Record<string, string> = {
     curse: `${placeIcon("hut", 640, 200, 2.6)}${fig({ x: 330, y: 260, s: .9, skin: SK.karna, cloth: C.madder, cloth2: C.indigo, crown: "mukuta", weapon: "bow" })}${fig({ x: 520, y: 270, s: .85, face: "left", skin: SK.elder, cloth: C.white, cloth2: C.ochre, crown: "topknot", weapon: "point", beard: true })}`,
@@ -19,5 +19,6 @@ export function vignette(kind?: string): string {
     victors: `<rect width="900" height="300" fill="${C.sky}"/>${scatter(40, 0, 900, 0, 200, (x, y, r) => star(x, y, 2 + r * 3), 3)}<rect y="220" width="900" height="80" fill="${C.ground}"/>${tent(220, 250, 1.6)}${tent(700, 250, 1.6)}${fig({ x: 400, y: 280, s: .8, skin: SK.bhima, cloth: C.indigo, cloth2: C.madder, crown: "mukuta", weapon: "fist", mustache: true })}${fig({ x: 520, y: 280, s: .8, face: "left", skin: SK.yudhi, cloth: C.white, cloth2: C.indigo, crown: "kirita", weapon: "none" })}`,
     kcamp: `<rect width="900" height="300" fill="${C.sky}"/>${scatter(40, 0, 900, 0, 200, (x, y, r) => star(x, y, 2 + r * 3), 8)}<rect y="220" width="900" height="80" fill="${C.ground}"/>${tent(450, 250, 2, C.madder)}${fig({ x: 330, y: 290, s: .8, skin: SK.duryo, cloth: C.madder, cloth2: C.ochre, crown: "kirita", weapon: "none", mustache: true, seated: true })}${fig({ x: 600, y: 280, s: .8, face: "left", skin: SK.elder, cloth: C.white, cloth2: C.ochre, crown: "topknot", weapon: "plead", beard: true })}`,
   };
-  return `<svg class="stub-art" viewBox="0 0 900 300" preserveAspectRatio="xMidYMid slice">${defs()}${(kind && v[kind]) || bg}</svg>`;
+  const label = alt ? ` role="img" aria-label="${alt.replace(/"/g, "&quot;")}"` : ` aria-hidden="true"`;
+  return `<svg class="stub-art" viewBox="0 0 900 300" preserveAspectRatio="xMidYMid slice"${label}>${defs()}${(kind && v[kind]) || bg}</svg>`;
 }

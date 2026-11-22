@@ -46,6 +46,8 @@ const FIXTURES = [
   ["edge-direction", "an omen pointing backward in time", { "edges.json": sub('"from": "a", "to": "d"', '"from": "d", "to": "a"') }],
   ["edge-direction", "a memory pointing forward in time", { "edges.json": sub('"type": "omen"', '"type": "memory"') }],
   ["place-certainty", "a place without a certainty flag", { "places.json": sub('"level": "site", "certainty": "textual"', '"level": "site"') }],
+  ["missing-alt", "a <Beat> without alt text", { "moments/a.mdx": sub('alt="Two warriors face each other." ', "") }],
+  ["missing-alt", "a drafted moment without art_alt", { "moments/b.mdx": sub('art_alt: "A figure."\n', "") }],
   ["built-incomplete", "a built scene without camera keyframes", { "moments/a.mdx": sub("cams: [[0, 0, 0, 100], [1, 0, 0, 100]]\n", "") }],
 ];
 

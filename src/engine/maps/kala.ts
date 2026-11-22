@@ -63,7 +63,7 @@ export function renderKala(): void {
     const ps = n.cast.map(c => pos(c, i)).filter((p): p is [number, number] => !!p); if (!ps.length) return;
     const ys = ps.map(p => p[1]), top = Math.min(...ys) - 12, bot = Math.max(...ys) + 12, seen = progress.visited.has(n.id), cur = n.id === ui.current;
     const fill = n.status === "unwritten" ? "none" : seen ? C.gold : C.paper2, dash = n.status === "drafted" ? "5 4" : n.status === "unwritten" ? "2 5" : "";
-    s += `<g class="knode" data-node="${n.id}" opacity="${ui.kalaPlace && n.place !== ui.kalaPlace ? .3 : 1}"><rect x="${X(i) - 15}" y="${top}" width="30" height="${bot - top}" rx="15" fill="${fill}" fill-opacity="${seen ? .35 : .7}" stroke="${n.status === "unwritten" ? C.muted : C.gold}" stroke-width="${cur ? 4 : 2}" ${dash ? `stroke-dasharray="${dash}"` : ""}/>
+    s += `<g class="knode" data-node="${n.id}" role="button" tabindex="0" aria-label="${n.title} — ${n.status === "unwritten" ? "not yet painted" : seen ? "walked" : n.status}" opacity="${ui.kalaPlace && n.place !== ui.kalaPlace ? .3 : 1}"><rect x="${X(i) - 15}" y="${top}" width="30" height="${bot - top}" rx="15" fill="${fill}" fill-opacity="${seen ? .35 : .7}" stroke="${n.status === "unwritten" ? C.muted : C.gold}" stroke-width="${cur ? 4 : 2}" ${dash ? `stroke-dasharray="${dash}"` : ""}/>
       ${ps.map((p, k) => `<circle cx="${p[0]}" cy="${p[1]}" r="4.5" fill="${PEOPLE[n.cast[k]] ? PEOPLE[n.cast[k]].line : C.ink}" stroke="${C.iron}" stroke-width="1"/>`).join("")}
       ${story.assembly.has(n.id) ? `<g transform="translate(${X(i)} ${top - 14})"><path d="M0 -9 L2.6 -2.6 L9 0 L2.6 2.6 L0 9 L-2.6 2.6 L-9 0 L-2.6 -2.6Z" fill="${C.madder}" stroke="${C.iron}" stroke-width="1"/></g>` : n.status === "built" ? `<circle cx="${X(i)}" cy="${top - 10}" r="5" fill="${C.ochreL}" stroke="${C.iron}"/>` : ""}
       <title>${n.title}</title></g>`;
@@ -71,7 +71,7 @@ export function renderKala(): void {
   // portrait medallions at the start of each line
   order.forEach(pid => {
     const first = lives[pid].findIndex(Boolean), p = pos(pid, first); if (!p) return;
-    s += `<g data-person="${pid}" style="cursor:pointer" opacity="${!ui.kalaHL || ui.kalaHL === pid ? 1 : .25}"><circle cx="${p[0] - 40}" cy="${p[1]}" r="17" fill="${PEOPLE[pid].line}"/><svg x="${p[0] - 56}" y="${p[1] - 16}" width="32" height="32">${headSVG(pid).replace("<svg ", "<svg width='32' height='32' ")}</svg><circle cx="${p[0] - 40}" cy="${p[1]}" r="16" fill="none" stroke="${PEOPLE[pid].line}" stroke-width="3"/></g>`;
+    s += `<g data-person="${pid}" role="button" tabindex="0" aria-label="${ui.kalaHL === pid ? "Show all lives" : `Follow ${PEOPLE[pid].n}’s river`}" style="cursor:pointer" opacity="${!ui.kalaHL || ui.kalaHL === pid ? 1 : .25}"><circle cx="${p[0] - 40}" cy="${p[1]}" r="17" fill="${PEOPLE[pid].line}"/><svg x="${p[0] - 56}" y="${p[1] - 16}" width="32" height="32">${headSVG(pid).replace("<svg ", "<svg width='32' height='32' ")}</svg><circle cx="${p[0] - 40}" cy="${p[1]}" r="16" fill="none" stroke="${PEOPLE[pid].line}" stroke-width="3"/></g>`;
   });
   $("#kalaScroll").innerHTML = `<svg id="kalaSvg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">${s}</svg>`;
   // fixed place labels
@@ -79,7 +79,7 @@ export function renderKala(): void {
   let L = `<svg width="${LW}" height="${H}">${defs()}<rect width="${LW}" height="${H}" fill="${C.paper}"/>`;
   BAND_ORDER.forEach((pl, b) => {
     const y = y0 + b * bandH + bandH / 2;
-    L += `<g data-kplace="${pl}" style="cursor:pointer"><rect x="0" y="${y0 + b * bandH}" width="${LW}" height="${bandH}" fill="${pl === ui.kalaPlace ? C.ochreL : (b % 2 ? C.paper2 : C.paper)}" opacity="${pl === ui.kalaPlace ? .8 : .6}"/>${placeIcon(story.places[pl].icon, 24, y, .62)}${LW < 60 ? "" : `<text x="44" y="${y + 5}" font-family="Kalam" font-size="13" fill="${C.ink}">${story.places[pl].short || placeName(pl)}</text>`}</g>`;
+    L += `<g data-kplace="${pl}" role="button" tabindex="0" aria-label="${story.places[pl].n}: show moments here" style="cursor:pointer"><rect x="0" y="${y0 + b * bandH}" width="${LW}" height="${bandH}" fill="${pl === ui.kalaPlace ? C.ochreL : (b % 2 ? C.paper2 : C.paper)}" opacity="${pl === ui.kalaPlace ? .8 : .6}"/>${placeIcon(story.places[pl].icon, 24, y, .62)}${LW < 60 ? "" : `<text x="44" y="${y + 5}" font-family="Kalam" font-size="13" fill="${C.ink}">${story.places[pl].short || placeName(pl)}</text>`}</g>`;
   });
   $("#kalaLabels").innerHTML = L + "</svg>";
   $("#kalaLabels").onclick = e => {
@@ -95,7 +95,19 @@ export function renderKala(): void {
     const n = t.closest<SVGGElement>("[data-node]"); if (n) { nodeInfo(n.dataset.node ?? ""); return; }
     const p = t.closest<SVGGElement>("[data-person]"); if (p) { ui.kalaHL = ui.kalaHL === p.dataset.person ? null : p.dataset.person ?? null; renderKala(); }
   });
+  $("#kalaText").innerHTML = kalaText();
   if (ui.kalaHL) showInfo(`<div class="ic">${headSVG(ui.kalaHL)}</div><div class="tx"><b>${PEOPLE[ui.kalaHL].n}</b><span class="hand" style="color:var(--muted)">their river through time — tap a moment</span></div><button class="kbtn" data-soul="${ui.kalaHL}">Their story</button>`);
+}
+
+/** the same chart as text, for screen readers: each person's moments in story order */
+function kalaText(): string {
+  const PEOPLE = story.people;
+  return `<h2>Kāla, the river of time, as a list</h2><p>Each person’s moments in story order. ✦ marks an assembly moment, where every thread meets.</p>`
+    + Object.keys(PEOPLE).map(pid => {
+      const mine = story.timeline.filter(n => n.cast.includes(pid));
+      const ended = PEOPLE[pid].death != null ? ` Their thread ends after “${mine.at(-1)?.title}”.` : "";
+      return `<h3>${PEOPLE[pid].n}</h3><ol>${mine.map(n => `<li>${story.assembly.has(n.id) ? "✦ " : ""}${n.title}, ${story.places[n.place].n}${progress.visited.has(n.id) ? " (walked)" : n.status === "unwritten" ? " (not yet painted)" : ""}</li>`).join("")}</ol><p>${ended}</p>`;
+    }).join("");
 }
 
 /** mouse drag-to-pan (touch uses native scrolling) */

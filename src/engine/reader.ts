@@ -10,6 +10,7 @@ import { go } from "./nav";
 import { choicesFor } from "./badges";
 import { openSoul, openSources, ask, closeModal, toast } from "./overlays";
 import { openMaps, renderMaps } from "./maps";
+import { installKeyboard, closeOverlay, dismissOverlay } from "./focus";
 import type { MapTab } from "./state";
 import type { ReaderData } from "./types";
 import { $, $$ } from "./util";
@@ -29,7 +30,7 @@ function onClick(e: MouseEvent): void {
   const g = t.closest<HTMLElement>("[data-go]");
   if (g) {
     const fromOverlay = $("#maps").classList.contains("on") || $("#soul").classList.contains("on");
-    $("#maps").classList.remove("on"); $("#soul").classList.remove("on");
+    dismissOverlay($("#maps")); dismissOverlay($("#soul"));
     const to = g.dataset.go ?? "home", cur = story.node[ui.current];
     if (fromOverlay && cur && to !== ui.current) ui.returnStack.push({ id: ui.current, y: scrollY, title: cur.title });
     go(to, fromOverlay && ui.returnStack.length ? { via: "index" } : {});
@@ -81,26 +82,37 @@ export function startReader(data: ReaderData): void {
   addEventListener("resize", frame);
   addEventListener("popstate", () => { const id = location.hash.slice(1) || "home"; if (id !== ui.current) go(id); });
   document.addEventListener("click", onClick);
-  document.addEventListener("keydown", e => {
-    if (e.key === "Escape") { $("#drawer").classList.remove("on"); $("#soul").classList.remove("on"); $("#maps").classList.remove("on"); }
-  });
+  installKeyboard(() => $("#gateNo").click());
+
+  // Sprint 2, D1: follow the device's "reduce motion" setting (no in-app toggle)
+  const rm = matchMedia("(prefers-reduced-motion: reduce)");
+  ui.reduced = rm.matches;
+  rm.addEventListener("change", () => { ui.reduced = rm.matches; ui.lastBeat = -1; frame(); });
 
   $("#brand").onclick = () => go("home");
   $("#mOk").onclick = () => closeModal(true);
   $("#mCancel").onclick = () => closeModal(false);
   $("#bmBtn").onclick = bookmark;
   $("#mapBtn").onclick = () => openMaps();
-  $("#mapClose").onclick = () => $("#maps").classList.remove("on");
-  $$(".mtab").forEach(b => b.onclick = () => {
+  $("#mapClose").onclick = () => closeOverlay($("#maps"));
+  const tabs = $$(".mtab");
+  const pickTab = (b: HTMLElement) => {
     ui.mapTab = b.dataset.t as MapTab;
     if (ui.mapTab !== "kala") { ui.kalaHL = null; ui.kalaPlace = null; }
-    renderMaps();
+    renderMaps(); b.focus();
+  };
+  tabs.forEach((b, i) => {
+    b.onclick = () => pickTab(b);
+    b.onkeydown = e => { // arrow keys move between tabs (ARIA tabs pattern)
+      const d = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+      if (d) { e.preventDefault(); pickTab(tabs[(i + d + tabs.length) % tabs.length]); }
+    };
   });
   $("#gateYes").onclick = () => {
-    store.set("m6.consent", true); $("#gate").classList.remove("on");
+    store.set("m6.consent", true); dismissOverlay($("#gate"));
     if (ui.pendingGo) { const [i, o] = ui.pendingGo; ui.pendingGo = null; go(i, o); }
   };
-  $("#gateNo").onclick = () => { $("#gate").classList.remove("on"); ui.pendingGo = null; };
+  $("#gateNo").onclick = () => { closeOverlay($("#gate")); ui.pendingGo = null; };
 
   applyKalamkari();
   const h = location.hash.slice(1);

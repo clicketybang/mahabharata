@@ -47,7 +47,7 @@ export function renderDesha(): void {
   // story places
   Object.entries(PLACES).forEach(([id, p]) => {
     const [x, y] = p.map, lit = visitedPlaces.has(id);
-    s += `<g class="dplace" data-place="${id}">${lit ? `<circle cx="${x}" cy="${y}" r="30" fill="url(#lampG)"/>` : ""}
+    s += `<g class="dplace" data-place="${id}" role="button" tabindex="0" aria-label="${lit ? p.n : "Unexplored place"}">${lit ? `<circle cx="${x}" cy="${y}" r="30" fill="url(#lampG)"/>` : ""}
       <circle cx="${x}" cy="${y}" r="21" fill="${C.paper}" stroke="${lit ? C.gold : C.muted}" stroke-width="${lit ? 3 : 2}" ${story.cert[id] === "traditional" ? 'stroke-dasharray="6 4"' : ""}/>${placeIcon(p.icon, x, y + 1, .62)}
       ${lit ? "" : `<g opacity=".8">${[[-14, -6], [0, -12], [14, -6], [-6, 6], [10, 6]].map(([dx, dy]) => `<circle cx="${x + dx}" cy="${y + dy}" r="10" fill="#d9ccad"/>`).join("")}</g>`}
       ${lit ? `<text x="${x}" y="${y + 38}" text-anchor="middle" font-family="Kalam" font-size="14" font-weight="700" fill="${C.gold}">${placeName(id).replace("Kāmyaka & Dvaita Forests", "The Forests")}</text>` : ""}
@@ -56,7 +56,11 @@ export function renderDesha(): void {
   // compass + cartouche
   s += `<g transform="translate(860 800)"><circle r="44" fill="${C.paper}" stroke="${C.gold}" stroke-width="2"/>${[0, 90, 180, 270].map(a => `<path transform="rotate(${a})" d="M0 -40 L8 0 L0 6 L-8 0Z" fill="${a ? C.ochre : C.madder}" stroke="${C.iron}" stroke-width="1.2"/>`).join("")}<text y="-48" text-anchor="middle" font-family="Gotu" font-size="14" fill="${C.ink}">N</text></g>
    <g transform="translate(150 820)"><rect x="-110" y="-30" width="220" height="56" rx="8" fill="${C.paper}" stroke="${C.gold}" stroke-width="2"/><text y="-2" text-anchor="middle" font-family="Tiro Devanagari Sanskrit" font-size="24" fill="${C.gold}">भारतवर्ष</text><text y="18" text-anchor="middle" font-family="Kalam" font-size="13" fill="${C.ink}" opacity=".7">${visitedPlaces.size} lands walked</text></g>`;
-  $("#desha").innerHTML = `<svg id="deshaSvg" viewBox="0 0 1000 900">${s}</svg>`;
+  $("#deshaMap").innerHTML = `<svg id="deshaSvg" viewBox="0 0 1000 900" role="group" aria-label="Map of Bhāratavarṣa">${s}</svg>`;
+  $("#deshaText").innerHTML = `<h2>Deśa, the land, as a list</h2><p>${visitedPlaces.size} lands walked.</p><ul>${Object.entries(PLACES).map(([id, p]) => {
+    const here = story.timeline.filter(n => n.place === id);
+    return `<li>${visitedPlaces.has(id) ? p.n : "An unexplored place"} (${story.cert[id]} location)${id === cur ? ", where you are now" : ""}: ${visitedPlaces.has(id) ? here.map(n => n.title).join("; ") : `${here.length} moment${here.length === 1 ? "" : "s"}`}</li>`;
+  }).join("")}</ul>`;
   $("#deshaSvg").addEventListener("click", e => { const p = (e.target as Element).closest<SVGGElement>("[data-place]"); if (p) placeInfo(p.dataset.place ?? ""); });
   if (cur) {
     const box = $("#desha"), [x, y] = PLACES[cur].map, svg = $("#deshaSvg");
