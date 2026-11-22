@@ -64,7 +64,7 @@ function ribbon(): string {
 function renderDrafted(id: string, sc: DraftedScene): string {
   const n = story.node[id];
   return `<section class="page on">${ribbon()}<div class="stub"><div class="kframe">${BANDS}<div class="stub-inner">
-     ${vignette(sc.art, sc.artAlt)}<div class="scene-head" style="padding:18px 0 0"><div class="parva">${sc.parva} · ${placeName(n.place)}</div><h1 tabindex="-1">${n.title}</h1><div class="dev" lang="sa">${sc.dev}</div>${meds(n.cast)}${headButtons(id)}</div>
+     ${vignette(sc.art, sc.artAlt, { icon: story.places[n.place].icon, figs: n.cast.slice(0, 4).map(c => story.people[c].f) })}<div class="scene-head" style="padding:18px 0 0"><div class="parva">${sc.parva} · ${placeName(n.place)}</div><h1 tabindex="-1">${n.title}</h1><div class="dev" lang="sa">${sc.dev}</div>${meds(n.cast)}${headButtons(id)}</div>
      ${pathNoteHTML(id)}<p class="text">${sc.text}</p><div class="unwritten">✎ Drafted. The painted, scroll-animated version of this page comes in a later sprint.</div>
    </div></div></div>${choicesHTML(id)}</section>`;
 }

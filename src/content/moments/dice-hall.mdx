@@ -1,6 +1,6 @@
 ---
-t_story: 10
-place_id: hall
+t_story: 270
+place_id: "hall"
 cast:
   - { id: yudhishthira, role: present }
   - { id: bhima, role: present }
@@ -9,8 +9,15 @@ cast:
   - { id: duryodhana, role: present }
   - { id: dushasana, role: present }
   - { id: karna, role: present }
+  - { id: nakula, role: present }
+  - { id: sahadeva, role: present }
+  - { id: bhishma, role: present }
+  - { id: drona, role: present }
+  - { id: dhritarashtra, role: present }
+  - { id: vidura, role: present }
+  - { id: shakuni, role: present }
 title: "The Game of Dice"
-status: built
+status: "built"
 era: "Sabhā"
 parva: "Sabhā Parva"
 dev: "द्यूतसभा"
@@ -20,11 +27,15 @@ variant_tier: 0
 debate_note: "Draupadī’s prayer to Kṛṣṇa during the disrobing is in the CE apparatus (544*), not the constituted text; scholars disagree on whether the intervention is early."
 content_notes: ["Contains: humiliation, assault on a woman"]
 assembly: true
-branches: [[character, draupadi], [place, palace], [character, karna]]
+absent:
+  - { id: krishna, reason: "Away at Dvārakā, fighting King Śālva; he tells the Pāṇḍavas so later (3.13–23)." }
+  - { id: kunti, reason: "In the women’s quarters; she meets her sons as they leave (2.70)." }
+  - { id: gandhari, reason: "In the inner palace, where she hears the omens (2.63)." }
+branches: [[character, draupadi], [place, palace], [character, karna], [character, nakula]]
 intro: "The assembly hall of Hastināpura, the day an empire was lost on a throw of dice — and a question was asked that no one could answer."
 len: 8
-cams: [[0,1200,640,2400],[0.12,1200,640,2400],[0.2,1200,960,760],[0.34,1200,960,760],[0.44,1700,800,1500],[0.56,1980,880,760],[0.66,1980,880,760],[0.72,640,860,1100],[0.82,880,880,620],[1,880,880,620]]
-anchors: { vow: 0.84 }
+cams: [[0, 1200, 640, 2400], [0.12, 1200, 640, 2400], [0.2, 1200, 960, 760], [0.34, 1200, 960, 760], [0.44, 1700, 800, 1500], [0.56, 1980, 880, 760], [0.66, 1980, 880, 760], [0.72, 640, 860, 1100], [0.82, 880, 880, 620], [1, 880, 880, 620]]
+anchors: {"vow": 0.84}
 ---
 
 <Beat alt="A long assembly hall of ochre pillars and garlanded arches. The blind king sits on a red throne at the centre; elders sit to the left; the Pāṇḍava brothers stand and sit before a dice board." from={0} to={0.14} title="The Hall" dev="सभा" cast={["yudhishthira", "duryodhana", "bhima", "arjuna"]}>

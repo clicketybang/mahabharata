@@ -1,8 +1,19 @@
 [
-  { "id": "kuru-pandava", "name": "Kuru · Pāṇḍava line", "pattern": "16 6", "note": "Sons of Pāṇḍu and their children." },
-  { "id": "kuru-kaurava", "name": "Kuru · Kaurava line", "pattern": "16 6 3 6", "note": "Sons of Dhṛtarāṣṭra. A sibling pattern to the Pāṇḍava line: both are Kurus." },
-  { "id": "yadava", "name": "Yādava", "pattern": "6 5", "note": "The Vṛṣṇi-Yādavas of Mathurā and Dvārakā." },
-  { "id": "panchala", "name": "Pāñcāla", "pattern": "6 5 2 5", "note": "The house of Drupada." },
-  { "id": "gandhara", "name": "Gāndhāra", "pattern": "2 5", "note": "The house of Subala, Gāndhārī’s father." },
-  { "id": "anga-suta", "name": "Aṅga · Sūta", "pattern": "2 5 2 5 10 5", "note": "Karṇa: raised by the charioteer Adhiratha, made king of Aṅga. (His birth to Kuntī is a secret the story keeps until after his death.)" }
+  {"id": "kuru-pandava", "name": "Kuru · Pāṇḍava line", "pattern": "16 6", "note": "Sons of Pāṇḍu and their children."},
+  {"id": "kuru-kaurava", "name": "Kuru · Kaurava line", "pattern": "16 6 3 6", "note": "Sons of Dhṛtarāṣṭra. A sibling pattern to the Pāṇḍava line: both are Kurus."},
+  {"id": "yadava", "name": "Yādava", "pattern": "6 5", "note": "The Vṛṣṇi-Yādavas of Mathurā and Dvārakā."},
+  {"id": "panchala", "name": "Pāñcāla", "pattern": "6 5 2 5", "note": "The house of Drupada."},
+  {"id": "gandhara", "name": "Gāndhāra", "pattern": "2 5", "note": "The house of Subala, Gāndhārī’s father."},
+  {"id": "anga-suta", "name": "Aṅga · Sūta", "pattern": "2 5 2 5 10 5", "note": "Karṇa: raised by the charioteer Adhiratha, made king of Aṅga. (His birth to Kuntī is a secret the story keeps until after his death.)"},
+  {"id": "kuru", "name": "Kuru · elder line", "pattern": "16 3", "note": "Śantanu, Bhīṣma and the generation of Dhṛtarāṣṭra, Pāṇḍu and Vidura; a parent pattern to the Pāṇḍava and Kaurava lines."},
+  {"id": "bharadvaja", "name": "Bhāradvāja", "pattern": "10 3 2 3", "note": "Droṇa, son of the sage Bharadvāja, and his son Aśvatthāmā."},
+  {"id": "gautama", "name": "Gautama", "pattern": "10 3 2 3 2 3", "note": "Kṛpa, of the line of the sage Gautama (Śaradvat)."},
+  {"id": "madra", "name": "Madra", "pattern": "4 4", "note": "The royal house of Madra: Śalya and his sister Mādrī."},
+  {"id": "matsya", "name": "Matsya", "pattern": "8 3 8 8", "note": "The house of Virāṭa. Satyavatī belongs here by birth: the text makes her twin brother the first Matsya king (1.57)."},
+  {"id": "kashi", "name": "Kāśī", "pattern": "3 3 3 9", "note": "The royal house of Kāśī: Ambā and her sisters."},
+  {"id": "sindhu", "name": "Sindhu", "pattern": "12 4 4 4", "note": "Jayadratha, king of Sindhu."},
+  {"id": "divine", "name": "Gods and spirits", "pattern": "1 3", "note": "Beings who are not human: Gaṅgā, and one-scene figures such as Hanumān and Urvaśī."},
+  {"id": "sages", "name": "Sages", "pattern": "1 6", "note": "Vyāsa and the line of seers and reciters who carry the story."},
+  {"id": "suta", "name": "Sūta bards", "pattern": "2 5 10 5", "note": "Charioteer-bards: Sañjaya, and Ugraśravas who tells the frame."},
+  {"id": "others", "name": "Other houses", "pattern": "1 9", "note": "One-scene figures from many peoples. They have no Kāla line, so this pattern is never drawn."}
 ]
