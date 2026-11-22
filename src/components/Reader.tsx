@@ -1,6 +1,9 @@
 import { useEffect } from "react";
 import { startReader } from "../engine/reader";
 import type { ReaderData } from "../engine/types";
+import { iconMap, iconBookmark, iconClose } from "../art/icons";
+
+const Icon = ({ svg }: { svg: string }) => <span className="icw" dangerouslySetInnerHTML={{ __html: svg }} />;
 
 /* The reader island: renders the fixed shell (top bar, maps, overlays, gate) and hands the
    story data to the engine, which paints scenes into #app. Faithful port of prototype v6. */
@@ -15,11 +18,11 @@ export default function Reader({ data }: { data: ReaderData }) {
         <button className="brand" id="brand" title="Back to the title page"><span className="dev" lang="sa">महाभारत</span><small id="themeName"></small></button>
         <div className="spacer"></div>
         <button className="tbtn" id="bmBtn" title="Bookmark this moment" style={{ display: "none" }}>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path d="M6 3h12v18l-6-4-6 4z" /></svg>
+          <Icon svg={iconBookmark} />
           <span className="lbl">Bookmark</span>
         </button>
         <button className="tbtn" id="mapBtn" title="Open the maps">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z M9 3v15 M15 6v15" /></svg>
+          <Icon svg={iconMap} />
           <span className="lbl">Maps</span>
         </button>
       </header>
@@ -36,7 +39,7 @@ export default function Reader({ data }: { data: ReaderData }) {
             <button className="mtab" data-t="marga" role="tab" aria-selected="false" aria-controls="marga" tabIndex={-1}><span className="dev" lang="sa">मार्ग</span><span className="en">MĀRGA · PATH</span></button>
             <button className="mtab" data-t="smriti" role="tab" aria-selected="false" aria-controls="smriti" tabIndex={-1}><span className="dev" lang="sa">स्मृति</span><span className="en">SMṚTI · MARKS</span></button>
           </div>
-          <button className="mclose" id="mapClose" aria-label="Close maps">×</button>
+          <button className="mclose" id="mapClose" aria-label="Close maps"><Icon svg={iconClose} /></button>
         </div>
         <div className="mbody">
           <div className="mview" id="kala" role="tabpanel" aria-label="Kāla, time"><div id="kalaLabels" aria-hidden="true"></div><div id="kalaScroll" tabIndex={0} role="group" aria-label="Kāla chart: scroll sideways through time"></div><div id="kalaText" className="sr-only"></div><div id="kalaLegend" aria-hidden="true"></div></div>

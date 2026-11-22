@@ -2,6 +2,7 @@
 import { story, progress, ui } from "./state";
 import { headSVG, placeBadge, placeName } from "./badges";
 import { placePath } from "./data";
+import { iconClose, iconReturn } from "../art/icons";
 import { openMaps } from "./maps";
 import { openOverlay, closeOverlay } from "./focus";
 import { $, $opt } from "./util";
@@ -14,8 +15,8 @@ export function openSoul(pid: string, fromId: string): void {
   const here = mine.find(n => n.id === fromId) || (from ? mine.find(n => n.t >= from.t) : null) || null;
   const hereNote = here && from && here.id !== fromId ? (here.t > from.t ? "next for them after where you were" : "") : "you are here in the story";
   let html = `<div class="shead" style="--c:${p.line}"><div class="face">${headSVG(pid)}</div><div><h3>${p.n}</h3><div class="dev">${p.dev}</div><p>${p.bio}</p>
-    <div class="acts"><button class="kbtn" id="soulRiver">Their river in Kāla</button>${from ? `<button class="kbtn" id="soulBack">↩ Back to ${from.title.split(" —")[0]}</button>` : ""}</div></div>
-    <button class="sclose" id="soulClose">×</button></div><div class="sbody" id="sbody"><div class="sline" style="--c:${p.line}">`;
+    <div class="acts"><button class="kbtn" id="soulRiver">Their river in Kāla</button>${from ? `<button class="kbtn" id="soulBack">${iconReturn} Back to ${from.title.split(" —")[0]}</button>` : ""}</div></div>
+    <button class="sclose" id="soulClose" aria-label="Close">${iconClose}</button></div><div class="sbody" id="sbody"><div class="sline" style="--c:${p.line}">`;
   let era = "";
   mine.forEach(n => {
     if (n.era !== era) { era = n.era; html += `<div class="sera">${era}</div>`; }
@@ -39,7 +40,7 @@ export function openSoul(pid: string, fromId: string): void {
 /* ---------- SOURCES & TELLINGS ---------- */
 export function openSources(id: string): void {
   const m = story.meta[id], n = story.node[id], cert = story.cert[n.place] || "textual";
-  $("#drawer").innerHTML = `<button class="x" id="drawerClose" aria-label="Close">×</button><h4>Sources & tellings</h4><div style="color:var(--muted)">${n.title}</div>
+  $("#drawer").innerHTML = `<button class="x" id="drawerClose" aria-label="Close">${iconClose}</button><h4>Sources & tellings</h4><div style="color:var(--muted)">${n.title}</div>
    <div class="row"><div class="lab">Critical Edition reference</div><div>${m?.ce || "—"}<span class="unv">unverified</span></div></div>
    <div class="row"><div class="lab">Which layer of the text</div>${story.tiers.map((t, i) => `<span class="tier ${i === (m?.tier ?? 0) ? "on" : ""}">${t}</span>`).join("")}</div>
    ${m?.debate ? `<div class="row"><div class="lab">Where scholars and tellings differ</div><div>${m.debate}</div></div>` : ""}
