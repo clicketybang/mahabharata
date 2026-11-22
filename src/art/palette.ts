@@ -1,4 +1,3 @@
-// @ts-nocheck — faithful port of prototype v6; typed in a later refactor.
 /* Srikalahasti Kalamkari palette. Drives the painted art (C) and the skin tones (SK).
    The Madhubani and Pichwai explorations live in /explorations, not in the shipped site. */
 
@@ -9,18 +8,20 @@ export const C = {
   paper: "#f6ecd8", paper2: "#eedfc0", ink: "#2b2018", gold: "#a63a2b", muted: "#d3c4a2", river: "#4f73a3",
   sea: "#d3e0d8", land: "#f3e6c6",
 };
+export type ColourName = keyof typeof C;
 
 /* Natural human skin tones; Kṛṣṇa is indigo by convention. Hue never encodes good or evil. */
 export const SK = {
   krishna: "#34528f", arjuna: "#c99566", bhima: "#b97a45", karna: "#e0b25f", dush: "#c08a5c", shalya: "#d6a271", yudhi: "#e2b383",
   draupadi: "#8b5a3c", shakuni: "#c99a6c", duryo: "#cf9a68", elder: "#e8c9a0", dhrit: "#dcae80", gandhari: "#e6c29a", abhi: "#e6bd92",
 };
+export type SkinName = keyof typeof SK;
 
 /* standard stroke width */
 export const S = 2.4;
 
 /* shared SVG <defs>: patterns, glow filter, lamp gradient */
-export function defs() {
+export function defs(): string {
   return `<defs>
  <pattern id="clothPat" width="7" height="7" patternUnits="userSpaceOnUse"><circle cx="3.5" cy="3.5" r="1.1" fill="#f7efdc" opacity=".85"/></pattern>
  <pattern id="dotsW" width="7" height="7" patternUnits="userSpaceOnUse"><circle cx="3.5" cy="3.5" r="1.1" fill="#f7efdc" opacity=".85"/></pattern>

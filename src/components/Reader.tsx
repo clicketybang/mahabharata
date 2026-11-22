@@ -1,12 +1,6 @@
 import { useEffect } from "react";
 import { startReader } from "../engine/reader";
-
-export interface ReaderData {
-  places: unknown[];
-  people: unknown[];
-  moments: unknown[];
-  tiers: string[];
-}
+import type { ReaderData } from "../engine/types";
 
 /* The reader island: renders the fixed shell (top bar, maps, overlays, gate) and hands the
    story data to the engine, which paints scenes into #app. Faithful port of prototype v6. */

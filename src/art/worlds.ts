@@ -1,4 +1,3 @@
-// @ts-nocheck — faithful port of prototype v6; typed in a later refactor.
 /* Painted worlds for the built (scroll-animated) scenes, with their scroll choreography.
    Keyed by moment id. Camera keyframes live in the moment's MDX frontmatter (`cams`). */
 import { C, SK, S, defs } from "./palette";
@@ -7,7 +6,13 @@ import { fig } from "./figure";
 import { chariot, elephant, crowdRow, arrowShape, tent } from "./objects";
 import { clamp, ease } from "../engine/util";
 
-function worldDay17() {
+/* attribute setter that accepts numbers (SVG attributes are strings) */
+const set = (el: Element | null, name: string, v: string | number) => el?.setAttribute(name, String(v));
+const q = (w: SVGSVGElement, s: string): Element | null => w.querySelector(s);
+
+export interface WorldArt { world: () => string; animate: (p: number, w: SVGSVGElement) => void }
+
+function worldDay17(): string {
   return `${defs()}<g id="cam"><g id="paint">
    <rect x="-3000" y="-3000" width="8400" height="3640" fill="${C.sky}"/>
    <rect x="-3000" y="620" width="8400" height="4000" fill="${C.ground}"/>
@@ -34,25 +39,25 @@ function worldDay17() {
   </g></g>`;
 }
 
-function animateDay17(p, w) {
+function animateDay17(p: number, w: SVGSVGElement): void {
   const a = clamp((p - .08) / .24), on = p > .08 && p < .34;
   for (let i = 0; i < 8; i++) {
-    const g = w.querySelector("#ar" + i); if (!on) { g.setAttribute("opacity", 0); continue; }
+    const g = q(w, "#ar" + i); if (!on) { set(g, "opacity", 0); continue; }
     const f = ((a * 6) + i / 8) % 1, dir = i % 2 ? -1 : 1, x0 = dir > 0 ? 1330 : 2120, x1 = dir > 0 ? 2120 : 1330, y = 720 + ((i * 37) % 60) - 30, x = x0 + (x1 - x0) * f, yy = y - Math.sin(f * Math.PI) * 90;
-    g.setAttribute("transform", `translate(${x} ${yy}) ${dir > 0 ? "" : "scale(-1 1)"}`); g.setAttribute("opacity", f < .05 || f > .95 ? 0 : 1);
+    set(g, "transform", `translate(${x} ${yy}) ${dir > 0 ? "" : "scale(-1 1)"}`); set(g, "opacity", f < .05 || f > .95 ? 0 : 1);
   }
-  const m = ease(clamp((p - .5) / .08)), arm = w.querySelector("#bhima-arm"); arm && arm.setAttribute("transform", `rotate(${-50 + m * 120} 12 -120)`);
-  w.querySelector("#dush").setAttribute("transform", `rotate(${ease(clamp((p - .56) / .06)) * 78} 610 930)`);
-  w.querySelector("#blood").setAttribute("opacity", clamp((p - .62) / .04));
-  const k = ease(clamp((p - .76) / .06)); w.querySelector("#karCh-wheel").setAttribute("transform", `translate(-10 ${-40 + k * 34})`);
-  w.querySelector("#karCh-body").setAttribute("transform", `rotate(${k * -5} 0 -40) translate(0 ${k * 14})`);
-  w.querySelector("#dust").setAttribute("opacity", k * (1 - clamp((p - .86) / .04)));
-  const d = ease(clamp((p - .8) / .05)); w.querySelector("#karnaFig").setAttribute("transform", `translate(${d * -40} ${d * 96})`);
-  w.querySelector("#anjalika").setAttribute("opacity", ease(clamp((p - .88) / .05)));
-  const ar = w.querySelector("#arjuna-arrow"); ar && ar.setAttribute("opacity", p > .88 ? 1 : 0);
+  const m = ease(clamp((p - .5) / .08)), arm = q(w, "#bhima-arm"); set(arm, "transform", `rotate(${-50 + m * 120} 12 -120)`);
+  set(q(w, "#dush"), "transform", `rotate(${ease(clamp((p - .56) / .06)) * 78} 610 930)`);
+  set(q(w, "#blood"), "opacity", clamp((p - .62) / .04));
+  const k = ease(clamp((p - .76) / .06)); set(q(w, "#karCh-wheel"), "transform", `translate(-10 ${-40 + k * 34})`);
+  set(q(w, "#karCh-body"), "transform", `rotate(${k * -5} 0 -40) translate(0 ${k * 14})`);
+  set(q(w, "#dust"), "opacity", k * (1 - clamp((p - .86) / .04)));
+  const d = ease(clamp((p - .8) / .05)); set(q(w, "#karnaFig"), "transform", `translate(${d * -40} ${d * 96})`);
+  set(q(w, "#anjalika"), "opacity", ease(clamp((p - .88) / .05)));
+  const ar = q(w, "#arjuna-arrow"); set(ar, "opacity", p > .88 ? 1 : 0);
 }
 
-function worldDice() {
+function worldDice(): string {
   let arches = "";
   for (let i = 0; i < 7; i++) {
     const x = 150 + i * 350;
@@ -88,17 +93,17 @@ function worldDice() {
   </g></g>`;
 }
 
-function animateDice(p, w) {
+function animateDice(p: number, w: SVGSVGElement): void {
   const t = clamp((p - .14) / .2);
   if (t > 0 && t < 1) {
-    w.querySelector("#die1").setAttribute("transform", `translate(${-30 + Math.sin(t * 20) * 30} ${-10 - Math.abs(Math.sin(t * 14)) * 60}) rotate(${t * 900})`);
-    w.querySelector("#die2").setAttribute("transform", `translate(${30 + Math.cos(t * 18) * 30} ${-6 - Math.abs(Math.cos(t * 12)) * 50}) rotate(${-t * 800})`);
+    set(q(w, "#die1"), "transform", `translate(${-30 + Math.sin(t * 20) * 30} ${-10 - Math.abs(Math.sin(t * 14)) * 60}) rotate(${t * 900})`);
+    set(q(w, "#die2"), "transform", `translate(${30 + Math.cos(t * 18) * 30} ${-6 - Math.abs(Math.cos(t * 12)) * 50}) rotate(${-t * 800})`);
   }
-  w.querySelector("#drag").setAttribute("transform", `translate(${(1 - ease(clamp((p - .36) / .14))) * 360} 0)`);
-  const a = w.querySelector("#bhima-arm"); a && a.setAttribute("transform", `rotate(${-40 + ease(clamp((p - .8) / .06)) * 40} 12 -120)`);
+  set(q(w, "#drag"), "transform", `translate(${(1 - ease(clamp((p - .36) / .14))) * 360} 0)`);
+  const a = q(w, "#bhima-arm"); set(a, "transform", `rotate(${-40 + ease(clamp((p - .8) / .06)) * 40} 12 -120)`);
 }
 
-export const WORLDS = {
+export const WORLDS: Record<string, WorldArt> = {
   "dice-hall": { world: worldDice, animate: animateDice },
   "day-17": { world: worldDay17, animate: animateDay17 },
 };

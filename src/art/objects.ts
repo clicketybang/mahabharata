@@ -1,9 +1,8 @@
-// @ts-nocheck — faithful port of prototype v6; typed in a later refactor.
 /* Horses, chariots, soldiers, elephants, crowds, arrows, tents. */
 import { C, S } from "./palette";
 import { rosette } from "./motifs";
 
-export function horse(x, y, s = 1, o = {}) {
+export function horse(x: number, y: number, s = 1, o: { color?: string; cap?: string } = {}): string {
   const body = o.color || C.white, cap = o.cap || C.madder;
   return `<g transform="translate(${x} ${y}) scale(${s})">
    <path d="M-60 -60 C-80 -50 -84 -20 -92 -6" fill="none" stroke="${C.iron}" stroke-width="7" stroke-linecap="round"/><path d="M-60 -60 C-80 -50 -84 -20 -92 -6" fill="none" stroke="${body}" stroke-width="3"/>
@@ -16,7 +15,8 @@ export function horse(x, y, s = 1, o = {}) {
    <path d="M-36 -46 L28 -46" stroke="${C.ochre}" stroke-width="5"/></g>`;
 }
 
-export function chariot(o) {
+export interface ChariotOpts { id?: string; x: number; y: number; face?: "left" | "right"; banner?: "hanuman" | "elephant"; cap?: string; cap2?: string; horses?: boolean }
+export function chariot(o: ChariotOpts): string {
   const id = o.id ? `id="${o.id}"` : "", flip = o.face === "left" ? " scale(-1 1)" : "";
   let spokes = "";
   for (let i = 0; i < 12; i++) { const a = i * 30 * Math.PI / 180; spokes += `<line x1="0" y1="0" x2="${(44 * Math.cos(a)).toFixed(1)}" y2="${(44 * Math.sin(a)).toFixed(1)}" stroke="${C.iron}" stroke-width="2.4"/>`; }
@@ -32,24 +32,24 @@ export function chariot(o) {
    <g ${o.id ? `id="${o.id}-wheel"` : ""} transform="translate(-10 -40)"><circle r="48" fill="${C.ochre}" stroke="${C.iron}" stroke-width="${S}"/><circle r="40" fill="${C.white}" stroke="${C.iron}" stroke-width="2"/>${spokes}<circle r="9" fill="${C.madder}" stroke="${C.iron}" stroke-width="2"/></g></g>`;
 }
 
-export function soldier(x, y, s, c) {
+export function soldier(x: number, y: number, s: number, c: string): string {
   return `<g transform="translate(${x} ${y}) scale(${s})"><path d="M-8 0 L-6 -30 L6 -30 L8 0Z" fill="${c}" stroke="${C.iron}" stroke-width="2"/><circle cy="-38" r="8" fill="${C.ochreL}" stroke="${C.iron}" stroke-width="2"/><path d="M-6 -44 L0 -54 L6 -44Z" fill="${C.ochre}" stroke="${C.iron}" stroke-width="1.5"/><path d="M10 6 L14 -70" stroke="${C.iron}" stroke-width="2.5"/><ellipse cx="-9" cy="-18" rx="7" ry="12" fill="${C.ochre}" stroke="${C.iron}" stroke-width="1.6"/></g>`;
 }
 
-export function elephant(x, y, s, face = 1, cap = C.madder) {
+export function elephant(x: number, y: number, s: number, face = 1, cap: string = C.madder): string {
   return `<g transform="translate(${x} ${y}) scale(${s * face} ${s})"><path d="M-70 -20 C -78 -70 -40 -100 10 -96 C 50 -96 70 -76 72 -50 C 84 -40 86 -10 80 10 L 70 10 C 70 -6 66 -18 60 -22 L 56 0 L 40 0 L 38 -24 L -30 -24 L -32 0 L -48 0 L -50 -22 C -60 -18 -66 -16 -70 -20Z" fill="${C.indigoL}" stroke="${C.iron}" stroke-width="2.6"/><circle cx="52" cy="-70" r="2.5" fill="${C.iron}"/><path d="M-40 -92 L 16 -92 L 18 -46 L -44 -46Z" fill="${cap}" stroke="${C.iron}" stroke-width="2"/><path d="M-40 -92 L 16 -92 L 18 -46 L -44 -46Z" fill="url(#clothPat)"/></g>`;
 }
 
-export function crowdRow(x0, x1, y, s, color, step = 46, seed = 1) {
+export function crowdRow(x0: number, x1: number, y: number, s: number, color: string, step = 46, seed = 1): string {
   let r = "", k = seed;
   for (let x = x0; x < x1; x += step) { k = (k * 9301 + 49297) % 233280; const j = k / 233280; r += soldier(x + j * 14, y + j * 8, s, color); }
   return r;
 }
 
-export function arrowShape(id) {
+export function arrowShape(id: string): string {
   return `<g id="${id}" opacity="0"><path d="M-40 0 L 30 0" stroke="${C.iron}" stroke-width="3.2"/><path d="M30 0 l -12 -6 v12z" fill="${C.ochreL}" stroke="${C.iron}" stroke-width="1.5"/><path d="M-40 0 l -8 -6 M-40 0 l -8 6" stroke="${C.madder}" stroke-width="2"/></g>`;
 }
 
-export function tent(x, y, s, c) {
+export function tent(x: number, y: number, s: number, c?: string): string {
   return `<g transform="translate(${x} ${y}) scale(${s})"><path d="M-60 0 L0 -80 L60 0Z" fill="${c || C.white}" stroke="${C.iron}" stroke-width="2.5"/><path d="M-60 0 L0 -80 L60 0Z" fill="url(#stripes)"/><path d="M-14 0 L0 -40 L14 0Z" fill="${C.iron}"/><path d="M0 -80 V-120" stroke="${C.iron}" stroke-width="3"/><path d="M0 -120 l 24 7 l -24 7z" fill="${C.madder}" stroke="${C.iron}"/></g>`;
 }

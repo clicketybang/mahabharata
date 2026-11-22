@@ -1,14 +1,22 @@
-// @ts-nocheck — faithful port of prototype v6; typed in a later refactor.
 /* The human figure, drawn facing right with feet at y=0 (~210 units tall).
    Options: skin, cloth, cloth2, face ("left" flips), seated, female, loose (hair), crown
    (kirita | krishna | mukuta | female | topknot), weapon (bow | mace | reins | dice | point |
    plead | fist | grab), halo, armour, beard, mustache, blind, veiled, arrow, id, x, y, s. */
 import { C, S } from "./palette";
 
-export function fig(o) {
+export type Crown = "kirita" | "krishna" | "mukuta" | "female" | "topknot";
+export type Weapon = "bow" | "mace" | "reins" | "dice" | "point" | "plead" | "fist" | "grab" | "none";
+export interface FigureOpts {
+  skin: string; cloth?: string; cloth2?: string; face?: "left" | "right";
+  seated?: boolean; female?: boolean; loose?: boolean; crown?: Crown; weapon?: Weapon;
+  halo?: boolean; armour?: boolean; beard?: boolean; mustache?: boolean; blind?: boolean; veiled?: boolean; arrow?: boolean;
+  id?: string; x?: number; y?: number; s?: number;
+}
+
+export function fig(o: FigureOpts): string {
   const skin = o.skin, cloth = o.cloth || C.madder, cloth2 = o.cloth2 || C.ochre, id = o.id ? `id="${o.id}"` : "";
   const flip = o.face === "left" ? " scale(-1 1)" : "";
-  let legs, upperY = 0;
+  let legs: string, upperY = 0;
   if (o.seated) {
     upperY = 58;
     legs = `<path d="M-38 -6 Q-30 -46 0 -48 Q36 -46 44 -6 Q0 10 -38 -6Z" fill="${cloth}" stroke="${C.iron}" stroke-width="${S}"/><path d="M-38 -6 Q-30 -46 0 -48 Q36 -46 44 -6 Q0 10 -38 -6Z" fill="url(#clothPat)"/>
@@ -50,8 +58,8 @@ export function fig(o) {
     crown = `<ellipse cx="-2" cy="-166" rx="9" ry="7" fill="${C.iron}"/><path d="M-6 -166 h 8" stroke="${C.ochre}" stroke-width="2"/>`;
   }
   const halo = o.halo ? `<circle cx="2" cy="-150" r="36" fill="${C.ochreL}" stroke="${C.iron}" stroke-width="${S}"/><circle cx="2" cy="-150" r="30" fill="none" stroke="${C.madder}" stroke-width="2" stroke-dasharray="3 4"/>` : "";
-  const arm = (x1, y1, x2, y2, w = 9) => `<path d="M${x1} ${y1} L${x2} ${y2}" stroke="${C.iron}" stroke-width="${w + 4.5}" stroke-linecap="round"/><path d="M${x1} ${y1} L${x2} ${y2}" stroke="${skin}" stroke-width="${w}" stroke-linecap="round"/>`;
-  const bangle = (x, y) => `<circle cx="${x}" cy="${y}" r="4" fill="${C.ochre}" stroke="${C.iron}" stroke-width="1.3"/>`;
+  const arm = (x1: number, y1: number, x2: number, y2: number, w = 9) => `<path d="M${x1} ${y1} L${x2} ${y2}" stroke="${C.iron}" stroke-width="${w + 4.5}" stroke-linecap="round"/><path d="M${x1} ${y1} L${x2} ${y2}" stroke="${skin}" stroke-width="${w}" stroke-linecap="round"/>`;
+  const bangle = (x: number, y: number) => `<circle cx="${x}" cy="${y}" r="4" fill="${C.ochre}" stroke="${C.iron}" stroke-width="1.3"/>`;
   let arms = "", back = ""; const w = o.weapon;
   if (w === "bow") {
     back = arm(-10, -120, -2, -106) + arm(-2, -106, 4, -114, 8);
