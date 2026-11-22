@@ -250,6 +250,10 @@ a.jump .kind{font-family:Kalam;font-size:.78em;padding:0 4px;margin-left:3px;bor
 .chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px}
 .chip{font-size:14px;padding:2px 10px;border-radius:12px;border:1px solid var(--line);background:var(--chip)}
 .chip.dim{opacity:.45}
+.info .realm,.info .certnote{font-size:13px;color:var(--muted)}
+.info .certnote{font-style:italic;margin-top:2px}
+.info .spot{font-family:Kalam;font-size:14px;color:var(--accent);margin-top:6px}
+.info .tx{max-height:46vh;overflow:auto}
 /* patra */
 #patra{overflow:auto;padding:22px}
 .pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:18px;max-width:1000px;margin:0 auto}

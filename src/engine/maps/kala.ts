@@ -4,15 +4,16 @@ import { placeIcon } from "../../art/places";
 import { story, progress, ui } from "../state";
 import { headSVG, placeName } from "../badges";
 import { $ } from "../util";
+import { siteOf } from "../data";
 import { nodeInfo, placeInfo, showInfo } from "./index";
 
-/** per column: the place this person is in, or null once their thread has ended */
+/** per column: the site (Kāla row) this person is in, or null once their thread has ended */
 function lifeAt(pid: string): (string | null)[] {
-  const p = story.people[pid]; let last = p.home;
+  const p = story.people[pid], home = siteOf(p.home); let last = home;
   return story.timeline.map(n => {
     if (p.death != null && n.t > p.death) return null;
-    if (n.cast.includes(pid)) { last = n.place; return n.place; }
-    if (p.returnsHome) last = p.home;
+    if (n.cast.includes(pid)) { last = siteOf(n.place); return last; }
+    if (p.returnsHome) last = home;
     return last;
   });
 }
@@ -63,10 +64,10 @@ export function renderKala(): void {
     const ps = n.cast.map(c => pos(c, i)).filter((p): p is [number, number] => !!p); if (!ps.length) return;
     const ys = ps.map(p => p[1]), top = Math.min(...ys) - 12, bot = Math.max(...ys) + 12, seen = progress.visited.has(n.id), cur = n.id === ui.current;
     const fill = n.status === "unwritten" ? "none" : seen ? C.gold : C.paper2, dash = n.status === "drafted" ? "5 4" : n.status === "unwritten" ? "2 5" : "";
-    s += `<g class="knode" data-node="${n.id}" role="button" tabindex="0" aria-label="${n.title} — ${n.status === "unwritten" ? "not yet painted" : seen ? "walked" : n.status}" opacity="${ui.kalaPlace && n.place !== ui.kalaPlace ? .3 : 1}"><rect x="${X(i) - 15}" y="${top}" width="30" height="${bot - top}" rx="15" fill="${fill}" fill-opacity="${seen ? .35 : .7}" stroke="${n.status === "unwritten" ? C.muted : C.gold}" stroke-width="${cur ? 4 : 2}" ${dash ? `stroke-dasharray="${dash}"` : ""}/>
+    s += `<g class="knode" data-node="${n.id}" role="button" tabindex="0" aria-label="${n.title}, ${placeName(n.place)} — ${n.status === "unwritten" ? "not yet painted" : seen ? "walked" : n.status}" opacity="${ui.kalaPlace && siteOf(n.place) !== ui.kalaPlace ? .3 : 1}"><rect x="${X(i) - 15}" y="${top}" width="30" height="${bot - top}" rx="15" fill="${fill}" fill-opacity="${seen ? .35 : .7}" stroke="${n.status === "unwritten" ? C.muted : C.gold}" stroke-width="${cur ? 4 : 2}" ${dash ? `stroke-dasharray="${dash}"` : ""}/>
       ${ps.map((p, k) => `<circle cx="${p[0]}" cy="${p[1]}" r="4.5" fill="${PEOPLE[n.cast[k]] ? PEOPLE[n.cast[k]].line : C.ink}" stroke="${C.iron}" stroke-width="1"/>`).join("")}
       ${story.assembly.has(n.id) ? `<g transform="translate(${X(i)} ${top - 14})"><path d="M0 -9 L2.6 -2.6 L9 0 L2.6 2.6 L0 9 L-2.6 2.6 L-9 0 L-2.6 -2.6Z" fill="${C.madder}" stroke="${C.iron}" stroke-width="1"/></g>` : n.status === "built" ? `<circle cx="${X(i)}" cy="${top - 10}" r="5" fill="${C.ochreL}" stroke="${C.iron}"/>` : ""}
-      <title>${n.title}</title></g>`;
+      <title>${n.title} · ${placeName(n.place)}</title></g>`;
   });
   // portrait medallions at the start of each line
   order.forEach(pid => {

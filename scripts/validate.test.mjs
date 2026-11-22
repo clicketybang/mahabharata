@@ -45,7 +45,11 @@ const FIXTURES = [
   ["unknown-anchor", "a <Jump> to an anchor the target doesn't declare", { "moments/c.mdx": sub('anchor="start"', 'anchor="nope"') }],
   ["edge-direction", "an omen pointing backward in time", { "edges.json": sub('"from": "a", "to": "d"', '"from": "d", "to": "a"') }],
   ["edge-direction", "a memory pointing forward in time", { "edges.json": sub('"type": "omen"', '"type": "memory"') }],
-  ["place-certainty", "a place without a certainty flag", { "places.json": sub('"level": "site", "certainty": "textual"', '"level": "site"') }],
+  ["place-certainty", "a place without a certainty flag", { "places.json": sub('"parent_id": "kuru", "certainty": "textual", "certainty_note": "The field."', '"parent_id": "kuru", "certainty_note": "The field."') }],
+  ["place-certainty", "a place without a reason for its certainty", { "places.json": sub('"certainty": "textual", "certainty_note": "The field."', '"certainty": "textual"') }],
+  ["place-level", "a spot with no site above it", { "places.json": sub('"level": "spot", "parent_id": "city"', '"level": "spot", "parent_id": "kuru"') }],
+  ["place-level", "a realm inside a site", { "places.json": sub('"id": "naimisha", "name": "Naimiṣa", "level": "site", "parent_id": null', '"id": "naimisha", "name": "Naimiṣa", "level": "realm", "parent_id": "city"') }],
+  ["moment-at-realm", "a moment set in a whole realm", { "moments/b.mdx": sub("place_id: dvaraka", "place_id: kuru") }],
   ["missing-alt", "a <Beat> without alt text", { "moments/a.mdx": sub('alt="Two warriors face each other." ', "") }],
   ["missing-alt", "a drafted moment without art_alt", { "moments/b.mdx": sub('art_alt: "A figure."\n', "") }],
   ["built-incomplete", "a built scene without camera keyframes", { "moments/a.mdx": sub("cams: [[0, 0, 0, 100], [1, 0, 0, 100]]\n", "") }],
@@ -57,6 +61,12 @@ for (const [code, what, edits] of FIXTURES) {
     assert.deepEqual([...new Set(codes(r))], [code], `expected only ${code}, got ${JSON.stringify(codes(r))}`);
   });
 }
+
+/* a loop in the hierarchy always breaks the nesting too, so both codes are expected */
+test("fails with place-cycle: a place that is its own ancestor", () => {
+  const r = run({ "places.json": sub('"id": "kuru", "name": "Kuru", "level": "realm", "parent_id": null', '"id": "kuru", "name": "Kuru", "level": "realm", "parent_id": "city"') });
+  assert.deepEqual([...new Set(codes(r))].sort(), ["place-cycle", "place-level"]);
+});
 
 /* If someone changes the engine's rule so that choices jump backward or skip ahead,
    the validator's independent re-check must still catch it. */

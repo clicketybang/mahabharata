@@ -1,6 +1,7 @@
 /* Overlays: a character's story (Rule 6), the Sources & tellings drawer, the note modal and the toast. */
 import { story, progress, ui } from "./state";
 import { headSVG, placeBadge, placeName } from "./badges";
+import { placePath } from "./data";
 import { openMaps } from "./maps";
 import { openOverlay, closeOverlay } from "./focus";
 import { $, $opt } from "./util";
@@ -43,7 +44,7 @@ export function openSources(id: string): void {
    <div class="row"><div class="lab">Which layer of the text</div>${story.tiers.map((t, i) => `<span class="tier ${i === (m?.tier ?? 0) ? "on" : ""}">${t}</span>`).join("")}</div>
    ${m?.debate ? `<div class="row"><div class="lab">Where scholars and tellings differ</div><div>${m.debate}</div></div>` : ""}
    <div class="row"><div class="lab">Who is telling this</div><div>${m?.narr || "—"}</div><div style="font-size:14px;color:var(--muted);margin-top:4px">The whole epic is told by Ugraśravas to the sages of the Naimiṣa forest, retelling Vaiśampāyana’s recital to King Janamejaya.</div></div>
-   <div class="row"><div class="lab">Place</div><div>${story.places[n.place].n}<span class="cert">${cert}</span></div></div>
+   <div class="row"><div class="lab">Place</div><div>${placePath(n.place).map(id => story.places[id].n.split(",")[0]).join(" › ")}<span class="cert">${cert}</span></div><div style="font-size:14px;color:var(--muted);margin-top:4px">${story.places[n.place].note} <span class="unv">unverified</span></div></div>
    <div class="row"><div class="lab">Other tellings</div><div style="font-size:15px;color:var(--muted)">Comparison drawer (Tamil, Telugu, Pandavani, Rajasthani, Wayang) arrives in Sprint 7.</div></div>`;
   $("#drawerClose").onclick = () => closeOverlay($("#drawer"));
   openOverlay($("#drawer"), "#drawerClose");

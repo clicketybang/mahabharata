@@ -73,11 +73,12 @@ const places = defineCollection({
     parent_id: id.nullable().default(null),
     level: z.enum(["realm", "site", "spot"]),
     certainty: z.enum(["textual", "traditional", "conjectural"]),
+    certainty_note: z.string(), // one line: why this certainty (unverified until scholarly review)
     map_xy: z.tuple([z.number(), z.number()]),
+    r: z.number().optional(), // realms: radius of the soft region on Deśa
     desc: z.string().optional(),
     icon: z.string(),
-    band: z.number().optional(), // row order in the Kāla chart
-    landmark: z.boolean().default(false), // shown fogged on Deśa; not yet a story setting
+    band: z.number().optional(), // sites: row order in the Kāla chart (spots use their site's row)
   }),
 });
 

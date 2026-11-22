@@ -17,7 +17,10 @@
      unknown-moment           an edge or <Jump> points to a moment that doesn't exist
      unknown-anchor           a <Jump anchor> names an anchor the target moment doesn't declare
      edge-direction           a memory edge points forward, or an omen/fulfilment edge points backward
-     place-certainty          a place lacks a certainty flag (textual | traditional | conjectural)
+     place-certainty          a place lacks a certainty flag (textual | traditional | conjectural) or its one-line reason
+     place-level              places don't nest realm › site › spot (a spot needs a site parent; a site's parent is a realm)
+     place-cycle              a place is its own ancestor
+     moment-at-realm          a moment is set in a whole realm instead of a site or spot (one setting per moment)
      built-incomplete         a built (scroll-animated) moment lacks camera keyframes, length or beats
      missing-alt              a <Beat> lacks alt text, or a drafted moment lacks art_alt (screen readers; Sprint 2)
    Warnings (do not fail): branch-thread-ends — a branch has no later moment, so no choice is shown.
@@ -73,10 +76,22 @@ export function validate(contentDir, opts = {}) {
   });
   const byId = Object.fromEntries(moments.map(m => [m.id, m]));
 
-  /* places */
+  /* places: certainty and the realm › site › spot hierarchy */
+  const placeById = Object.fromEntries(places.map(p => [p.id, p]));
+  const NEST = { realm: [null], site: [null, "realm"], spot: ["site"] };
   for (const p of places) {
-    if (!CERTAINTY.has(p.certainty)) err("place-certainty", `place:${p.id}`, `certainty must be textual | traditional | conjectural (got ${JSON.stringify(p.certainty)})`);
-    if (p.parent_id && !placeIds.has(p.parent_id)) err("unknown-place", `place:${p.id}`, `parent_id "${p.parent_id}" is not a place`);
+    const at = `place:${p.id}`;
+    if (!CERTAINTY.has(p.certainty)) err("place-certainty", at, `certainty must be textual | traditional | conjectural (got ${JSON.stringify(p.certainty)})`);
+    else if (!(typeof p.certainty_note === "string" && p.certainty_note.trim())) err("place-certainty", at, "certainty_note (one line: why this certainty) is required");
+    if (p.parent_id && !placeIds.has(p.parent_id)) { err("unknown-place", at, `parent_id "${p.parent_id}" is not a place`); continue; }
+    const parentLevel = p.parent_id ? placeById[p.parent_id].level : null;
+    if (!NEST[p.level]) err("place-level", at, `level must be realm | site | spot (got ${JSON.stringify(p.level)})`);
+    else if (!NEST[p.level].includes(parentLevel)) err("place-level", at, `a ${p.level} can't sit inside ${parentLevel ? `a ${parentLevel}` : "nothing"}`);
+    const seen = new Set([p.id]);
+    for (let q = placeById[p.parent_id]; q; q = placeById[q.parent_id]) {
+      if (seen.has(q.id)) { err("place-cycle", at, `"${q.id}" appears twice in its own ancestry`); break; }
+      seen.add(q.id);
+    }
   }
   /* people */
   for (const p of people) {
@@ -97,6 +112,7 @@ export function validate(contentDir, opts = {}) {
       else seenT.set(d.t_story, m.id);
     }
     if (typeof d.place_id === "string" && d.place_id && !placeIds.has(d.place_id)) err("unknown-place", at, `place_id "${d.place_id}" is not a place`);
+    else if (placeById[d.place_id]?.level === "realm") err("moment-at-realm", at, `"${d.place_id}" is a whole realm; set the moment in one of its sites or spots`);
     for (const c of d.cast || []) if (!personIds.has(c.id)) err("unknown-person", at, `cast member "${c.id}" is not a person`);
     m.beats.forEach((b, i) => b.cast.forEach(c => { if (!personIds.has(c)) err("unknown-person", `${at} beat ${i + 1}`, `"${c}" is not a person`); }));
     for (const j of m.jumps) {
