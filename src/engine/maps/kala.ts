@@ -25,11 +25,14 @@ export function renderKala(): void {
   const X = (i: number) => x0 + i * colW, BY = (pl: string) => y0 + BAND_ORDER.indexOf(pl) * bandH + bandH / 2;
   const order = Object.keys(PEOPLE).filter(p => !PEOPLE[p].minor); // one-scene figures get no line
   const lives = Object.fromEntries(order.map(p => [p, lifeAt(p)]));
-  const pos = (pid: string, i: number): [number, number] | null => {
-    const pl = lives[pid][i]; if (!pl) return null;
-    const here = order.filter(q => lives[q][i] === pl), k = here.indexOf(pid);
-    return [X(i), BY(pl) + (k - (here.length - 1) / 2) * 9];
-  };
+  // every line's position per column, computed once (Sprint 4: ~110 columns × ~40 lines)
+  const P: Record<string, ([number, number] | null)[]> = Object.fromEntries(order.map(p => [p, TL.map(() => null)]));
+  TL.forEach((_, i) => {
+    const bySite = new Map<string, string[]>();
+    order.forEach(p => { const pl = lives[p][i]; if (pl) { if (!bySite.has(pl)) bySite.set(pl, []); bySite.get(pl)!.push(p); } });
+    bySite.forEach((here, pl) => here.forEach((p, k) => { P[p][i] = [X(i), BY(pl) + (k - (here.length - 1) / 2) * 9]; }));
+  });
+  const pos = (pid: string, i: number): [number, number] | null => P[pid]?.[i] ?? null; // one-scene figures have no line
   const curIdx = TL.findIndex(n => n.id === ui.current);
   let s = `${defs()}<rect width="${W}" height="${H}" fill="${C.paper}"/>`;
   // bands
@@ -49,32 +52,41 @@ export function renderKala(): void {
     const col = PEOPLE[pid].line, hl = !ui.kalaHL || ui.kalaHL === pid, inFocus = focusSet.has(pid) || !!ui.kalaHL;
     const seenIdx = TL.map((n, i) => progress.visited.has(n.id) && n.cast.includes(pid) ? i : -1).filter(i => i >= 0), lo = Math.min(...seenIdx), hi = Math.max(...seenIdx);
     seenIdx.forEach(i => { const p = pos(pid, i); if (p) lit += `<circle cx="${p[0]}" cy="${p[1]}" r="7" fill="${col}" opacity="${hl && inFocus ? .9 : .1}" filter="url(#glow)"/>`; });
+    // one path per person (not one per segment): far fewer DOM nodes at this scale
+    let dBase = "", dLit = "";
     for (let i = 0; i < TL.length - 1; i++) {
       const a = pos(pid, i), b = pos(pid, i + 1); if (!a || !b) continue;
-      base += `<path class="kline" d="${curve(a, b)}" fill="none" stroke="${C.muted}" stroke-width="3" stroke-linecap="round" opacity="${hl ? (inFocus ? .95 : .3) : .15}"/>`;
-      if (seenIdx.length && i >= lo && i < hi) lit += `<path d="${curve(a, b)}" fill="none" stroke="${col}" stroke-width="${ui.kalaHL === pid ? 6 : 4.5}" stroke-linecap="${PEOPLE[pid].dash ? "butt" : "round"}" ${PEOPLE[pid].dash ? `stroke-dasharray="${PEOPLE[pid].dash}"` : ""} opacity="${hl ? (inFocus ? 1 : .12) : .12}"/>`;
+      dBase += curve(a, b) + " ";
+      if (seenIdx.length && i >= lo && i < hi) dLit += curve(a, b) + " ";
     }
+    if (dBase) base += `<path class="kline" d="${dBase}" fill="none" stroke="${C.muted}" stroke-width="3" stroke-linecap="round" opacity="${hl ? (inFocus ? .95 : .3) : .15}"/>`;
+    if (dLit) lit += `<path d="${dLit}" fill="none" stroke="${col}" stroke-width="${ui.kalaHL === pid ? 6 : 4.5}" stroke-linecap="${PEOPLE[pid].dash ? "butt" : "round"}" ${PEOPLE[pid].dash ? `stroke-dasharray="${PEOPLE[pid].dash}"` : ""} opacity="${hl ? (inFocus ? 1 : .12) : .12}"/>`;
     if (PEOPLE[pid].death != null) {
       const li = lives[pid].map(Boolean).lastIndexOf(true), d = pos(pid, li);
       if (d) lit += `<g opacity="${hl ? 1 : .15}"><path d="M${d[0] + 10} ${d[1] - 6} l 10 6 l -10 6" fill="none" stroke="${col}" stroke-width="3"/><circle cx="${d[0] + 26}" cy="${d[1]}" r="4" fill="${C.madder}" stroke="${C.ink}" stroke-width="1"/></g>`;
     }
   });
   s += base + lit;
-  // moments
+  // moments (each person's presence dots are drawn as ONE path per person, after the pills)
+  const dotD: Record<string, string> = {};
   TL.forEach((n, i) => {
-    const ps = n.cast.map(c => pos(c, i)).filter((p): p is [number, number] => !!p); if (!ps.length) return;
+    const dots = n.cast.map(c => [c, pos(c, i)] as const).filter((d): d is readonly [string, [number, number]] => !!d[1]), ps = dots.map(d => d[1]);
+    if (!ps.length) return;
+    dots.forEach(([c, p]) => { dotD[c] = (dotD[c] ?? "") + `M${p[0] - 4.5} ${p[1]}a4.5 4.5 0 1 0 9 0a4.5 4.5 0 1 0 -9 0`; });
     const ys = ps.map(p => p[1]), top = Math.min(...ys) - 12, bot = Math.max(...ys) + 12, seen = progress.visited.has(n.id), cur = n.id === ui.current;
     const fill = n.status === "unwritten" ? "none" : seen ? C.gold : C.paper2, dash = n.status === "drafted" ? "5 4" : n.status === "unwritten" ? "2 5" : "";
     s += `<g class="knode" data-node="${n.id}" role="button" tabindex="0" aria-label="${n.title}, ${placeName(n.place)} — ${n.status === "unwritten" ? "not yet painted" : seen ? "walked" : n.status}" opacity="${ui.kalaPlace && siteOf(n.place) !== ui.kalaPlace ? .3 : 1}"><rect x="${X(i) - 15}" y="${top}" width="30" height="${bot - top}" rx="15" fill="${fill}" fill-opacity="${seen ? .35 : .7}" stroke="${n.status === "unwritten" ? C.muted : C.gold}" stroke-width="${cur ? 4 : 2}" ${dash ? `stroke-dasharray="${dash}"` : ""}/>
-      ${ps.map((p, k) => `<circle cx="${p[0]}" cy="${p[1]}" r="4.5" fill="${PEOPLE[n.cast[k]] ? PEOPLE[n.cast[k]].line : C.ink}" stroke="${C.iron}" stroke-width="1"/>`).join("")}
       ${story.assembly.has(n.id) ? `<g transform="translate(${X(i)} ${top - 14})"><path d="M0 -9 L2.6 -2.6 L9 0 L2.6 2.6 L0 9 L-2.6 2.6 L-9 0 L-2.6 -2.6Z" fill="${C.madder}" stroke="${C.iron}" stroke-width="1"/></g>` : n.status === "built" ? `<circle cx="${X(i)}" cy="${top - 10}" r="5" fill="${C.ochreL}" stroke="${C.iron}"/>` : ""}
       <title>${n.title} · ${placeName(n.place)}</title></g>`;
   });
+  s += `<g pointer-events="none">${Object.entries(dotD).map(([c, d]) => `<path d="${d}" fill="${PEOPLE[c].line}" stroke="${C.iron}" stroke-width="1"/>`).join("")}</g>`;
   // portrait medallions at the start of each line
   order.forEach(pid => {
     const first = lives[pid].findIndex(Boolean), p = pos(pid, first); if (!p) return;
     const medOp = ui.kalaHL ? (ui.kalaHL === pid ? 1 : .25) : focusSet.has(pid) ? 1 : .45;
-    s += `<g data-person="${pid}" role="button" tabindex="0" aria-label="${ui.kalaHL === pid ? "Show all lives" : `Follow ${PEOPLE[pid].n}’s river`}" style="cursor:pointer" opacity="${medOp}"><circle cx="${p[0] - 40}" cy="${p[1]}" r="17" fill="${PEOPLE[pid].line}"/><svg x="${p[0] - 56}" y="${p[1] - 16}" width="32" height="32">${headSVG(pid).replace("<svg ", "<svg width='32' height='32' ")}</svg><circle cx="${p[0] - 40}" cy="${p[1]}" r="16" fill="none" stroke="${PEOPLE[pid].line}" stroke-width="3"/></g>`;
+    // D6 at scale: full portraits for the current cast (or the followed life); an initial for everyone else, to keep the chart light
+    const full = ui.kalaHL ? ui.kalaHL === pid : focusSet.has(pid);
+    s += `<g data-person="${pid}" role="button" tabindex="0" aria-label="${ui.kalaHL === pid ? "Show all lives" : `Follow ${PEOPLE[pid].n}’s river`}" style="cursor:pointer" opacity="${medOp}"><circle cx="${p[0] - 40}" cy="${p[1]}" r="17" fill="${PEOPLE[pid].line}"/>${full ? `<svg x="${p[0] - 56}" y="${p[1] - 16}" width="32" height="32">${headSVG(pid).replace("<svg ", "<svg width='32' height='32' ")}</svg>` : `<text x="${p[0] - 40}" y="${p[1] + 5}" text-anchor="middle" font-family="Kalam" font-size="15" fill="${C.paper}">${PEOPLE[pid].n.charAt(0)}</text>`}<circle cx="${p[0] - 40}" cy="${p[1]}" r="16" fill="none" stroke="${PEOPLE[pid].line}" stroke-width="3"/></g>`;
   });
   $("#kalaScroll").innerHTML = `<svg id="kalaSvg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">${s}</svg>`;
   // fixed place labels

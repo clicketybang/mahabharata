@@ -149,5 +149,5 @@ with sync_playwright() as pw:
 httpd.shutdown()
 for e in errors:
     print("ERROR " + e)
-print(f"\n{sum(results)}/{len(results)} checks passed, {len(errors)} page errors")
+print(f"\n{sum(results)}/{len(results)} checks passed, {len(errors)} page errors"); [print("  page error:", e[:300]) for e in errors]
 sys.exit(0 if all(results) and not errors else 1)

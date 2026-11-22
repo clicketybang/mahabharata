@@ -14,6 +14,7 @@ export type ColourName = keyof typeof C;
 export const SK = {
   krishna: "#34528f", arjuna: "#c99566", bhima: "#b97a45", karna: "#e0b25f", dush: "#c08a5c", shalya: "#d6a271", yudhi: "#e2b383",
   draupadi: "#8b5a3c", shakuni: "#c99a6c", duryo: "#cf9a68", elder: "#e8c9a0", dhrit: "#dcae80", gandhari: "#e6c29a", abhi: "#e6bd92",
+  nakula: "#d7a676", sahadeva: "#c99a6a", kunti: "#d9ab80", warm: "#c78d5c", deep: "#8f5e3e", fair: "#e9c7a0", monkey: "#b88346",
 };
 export type SkinName = keyof typeof SK;
 

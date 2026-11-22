@@ -23,6 +23,8 @@ def shot(page, name):
         page.screenshot(path=os.path.join(SHOTS, name + ".png"))
 
 
+MOMENTS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "src", "content", "moments")
+
 def serve():
     class Quiet(http.server.SimpleHTTPRequestHandler):
         def log_message(self, *a):
@@ -64,7 +66,7 @@ def run(viewport, label):
         caps = page.query_selector_all(".cap")
         check(f"{label}: dice hall has 6 beats", len(caps) == 6, f"found {len(caps)}")
         check(f"{label}: 'who is speaking' chip present", "Vaiśampāyana tells Janamejaya" in page.inner_text(".cap .who"))
-        check(f"{label}: header portraits = cast of 7", len(page.query_selector_all(".scene-head .med")) == 7)
+        check(f"{label}: header portraits = cast of 14", len(page.query_selector_all(".scene-head .med")) == 14)
         scroll_scene_to(page, 0.55)
         on = page.query_selector(".cap.on b")
         check(f"{label}: scrolling to 0.55 shows 'Draupadī’s Question'", on and on.inner_text() == "Draupadī’s Question", on.inner_text() if on else "none")
@@ -89,7 +91,7 @@ def run(viewport, label):
         page.evaluate("document.querySelector('.choices').scrollIntoView()")
         page.wait_for_timeout(200)
         titles = [e.inner_text() for e in page.query_selector_all(".choice h3")]
-        check(f"{label}: dice hall choices generated forward in time", titles == ["The Blind King’s Boons", "Jackals at the Fire", "The Blind King’s Boons"], json.dumps(titles, ensure_ascii=False))
+        check(f"{label}: dice hall choices generated forward in time", titles == ["The Blind King’s Boons", "Jackals at the Fire", "The Blind King’s Boons", "Into the Forest"], json.dumps(titles, ensure_ascii=False))
         shot(page, f"{label}-05-choices")
         page.click(".choice[data-choose='1']")
         page.wait_for_timeout(300)
@@ -98,11 +100,11 @@ def run(viewport, label):
         page.fill("#pnInput", "to hear the omens")
         page.click("#pnSave")
 
-        # unpainted destination shows disabled
+        # Sprint 4: every moment is drafted, so no destination is disabled any more
         page.goto(f"http://127.0.0.1:{PORT}/#kcamp-night")
         page.reload(); page.wait_for_selector(".scene-head h1")
         dis = page.query_selector_all(".choice[disabled]")
-        check(f"{label}: unwritten destinations are disabled 'not yet painted'", len(dis) == 2 and all("not yet painted" in d.inner_text() for d in dis))
+        check(f"{label}: no destination is 'not yet painted' once the spine is drafted", len(dis) == 0 and len(page.query_selector_all(".choice")) >= 2)
 
         # Day 17 omen/anchor jump into the dice hall vow
         page.goto(f"http://127.0.0.1:{PORT}/#day-17"); page.reload(); page.wait_for_selector("#scrolly")
@@ -144,7 +146,8 @@ def run(viewport, label):
         page.click(".mtab[data-t='marga']"); page.wait_for_timeout(200)
         check(f"{label}: path note survived reload", "to hear the omens" in page.inner_text("#marga"))
         page.click(".mtab[data-t='kala']"); page.wait_for_timeout(200)
-        check(f"{label}: Kāla marks assembly moments (✦)", page.evaluate("document.querySelectorAll('#kalaSvg .knode path[d^=\"M0 -9\"]').length") == 8)
+        n_assembly = sum("\nassembly: true" in open(os.path.join(MOMENTS, f)).read() for f in os.listdir(MOMENTS))
+        check(f"{label}: Kāla marks assembly moments (✦)", page.evaluate("document.querySelectorAll('#kalaSvg .knode path[d^=\"M0 -9\"]').length") == n_assembly, f"expected {n_assembly}")
         browser.close()
 
 

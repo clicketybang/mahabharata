@@ -21,7 +21,13 @@ export function renderMaps(): void {
   $$(".mtab").forEach(b => { const on = b.dataset.t === ui.mapTab; b.classList.toggle("on", on); b.setAttribute("aria-selected", String(on)); b.tabIndex = on ? 0 : -1; });
   $$(".mview").forEach(v => v.classList.toggle("on", v.id === ui.mapTab));
   hideInfo();
-  ({ kala: renderKala, desha: renderDesha, patra: renderPatra, marga: renderMarga, smriti: renderSmriti })[ui.mapTab]();
+  if (ui.mapTab === "kala") {
+    // Kāla is the heavy view (~110 columns since Sprint 4): let the overlay and its focus paint first, then draw
+    // the chart in the next task, so opening the maps stays a fast interaction
+    requestAnimationFrame(() => setTimeout(() => { if (ui.mapTab === "kala") renderKala(); }, 0));
+    return;
+  }
+  ({ desha: renderDesha, patra: renderPatra, marga: renderMarga, smriti: renderSmriti })[ui.mapTab]();
 }
 
 export function hideInfo(): void { $("#info").classList.remove("on"); }
