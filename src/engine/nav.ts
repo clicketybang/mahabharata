@@ -2,13 +2,13 @@
 import { story, progress, ui, store, type GoOptions } from "./state";
 import { renderHome, renderScene, decorateJumps } from "./pages";
 import { frame, scrollToP } from "./camera";
-import { openSoul } from "./overlays";
+import { openOverlay } from "./focus";
 import { $, $$, $opt } from "./util";
 
 export function go(id: string, opts: GoOptions = {}): void {
   if (!story.scenes[id] && id !== "home") id = "home";
   if (id !== "home" && !store.get("m6.consent", false)) {
-    ui.pendingGo = [id, opts]; $("#gate").classList.add("on"); setTimeout(() => $("#gateYes").focus(), 50);
+    ui.pendingGo = [id, opts]; openOverlay($("#gate"), "#gateYes");
     if (ui.current !== "home" || !$("#app").innerHTML) go("home");
     return;
   }
@@ -24,6 +24,8 @@ export function go(id: string, opts: GoOptions = {}): void {
   if (location.hash !== "#" + id) history.pushState(null, "", "#" + id);
   decorateJumps(); updateReturn(); wireScene();
   requestAnimationFrame(() => {
+    // move focus to the new page's title so screen readers announce it (keyboard users start there)
+    if (!document.querySelector("#gate.on")) $opt<HTMLElement>("#app h1")?.focus({ preventScroll: true });
     coach();
     if (opts.at != null) scrollToP(opts.at); else if (opts.y != null) scrollTo(0, opts.y); else scrollTo(0, 0);
     frame();
@@ -53,10 +55,6 @@ function wireScene(): void {
     last.note = $<HTMLInputElement>("#pnInput").value.trim(); last.noted = true; progress.save();
     $(".pathnote").innerHTML = `<span>Noted in your path ✓</span>`;
   };
-  $$(".med[data-soul]").forEach(m => {
-    if (!m.hasAttribute("tabindex")) { m.tabIndex = 0; m.setAttribute("role", "button"); }
-    m.onkeydown = e => { if (e.key === "Enter") openSoul(m.dataset.soul ?? "", ui.current); };
-  });
 }
 
 /** first-visit hint: "Tap a face to follow their story" */
@@ -65,8 +63,9 @@ function coach(): void {
   const m = $opt(".scene-head .med"); if (!m) return;
   const r = m.getBoundingClientRect(), c = document.createElement("div");
   c.className = "coach"; c.textContent = "Tap a face to follow their story";
-  c.style.left = (r.left + r.width / 2 + scrollX) + "px"; c.style.top = (r.top + scrollY - 46) + "px"; c.style.transform = "translateX(-50%)";
-  document.body.appendChild(c);
+  const a = $("#app").getBoundingClientRect();
+  c.style.left = (r.left + r.width / 2 - a.left) + "px"; c.style.top = (r.top - a.top - 46) + "px"; c.style.transform = "translateX(-50%)";
+  $("#app").appendChild(c);
   const done = () => { c.remove(); store.set("m5.coached", true); removeEventListener("scroll", done); };
   setTimeout(() => addEventListener("scroll", done, { once: true }), 400); setTimeout(done, 7000);
 }

@@ -44,6 +44,7 @@ const moments = defineCollection({
     anchors: z.record(z.string(), z.number()).optional(),
     // drafted scenes
     art: z.string().optional(),
+    art_alt: z.string().optional(), // what the vignette shows, for screen readers (required for drafted moments; validator)
   }),
 });
 

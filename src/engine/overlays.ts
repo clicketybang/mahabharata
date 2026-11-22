@@ -2,6 +2,7 @@
 import { story, progress, ui } from "./state";
 import { headSVG, placeBadge, placeName } from "./badges";
 import { openMaps } from "./maps";
+import { openOverlay, closeOverlay } from "./focus";
 import { $, $opt } from "./util";
 
 /* ---------- SOUL — one character's story, in order, marked where you were ---------- */
@@ -26,10 +27,11 @@ export function openSoul(pid: string, fromId: string): void {
   });
   if (p.death != null) html += `<div class="sdeath">✦ Here ${p.n}’s thread ends.</div>`;
   html += `</div></div>`;
-  const el = $("#soul"); el.innerHTML = html; el.classList.add("on");
-  $("#soulClose").onclick = () => el.classList.remove("on");
-  const back = $opt("#soulBack"); if (back) back.onclick = () => el.classList.remove("on");
-  $("#soulRiver").onclick = () => { el.classList.remove("on"); ui.kalaHL = pid; ui.kalaPlace = null; openMaps("kala"); };
+  const el = $("#soul"); el.innerHTML = html; el.setAttribute("aria-label", `${p.n}’s story`);
+  openOverlay(el, here ? "#smo-" + here.id : "#soulClose");
+  $("#soulClose").onclick = () => closeOverlay(el);
+  const back = $opt("#soulBack"); if (back) back.onclick = () => closeOverlay(el);
+  $("#soulRiver").onclick = () => { closeOverlay(el); ui.kalaHL = pid; ui.kalaPlace = null; openMaps("kala"); };
   if (here) requestAnimationFrame(() => document.getElementById("smo-" + here.id)?.scrollIntoView({ block: "center" }));
 }
 
@@ -43,18 +45,18 @@ export function openSources(id: string): void {
    <div class="row"><div class="lab">Who is telling this</div><div>${m?.narr || "—"}</div><div style="font-size:14px;color:var(--muted);margin-top:4px">The whole epic is told by Ugraśravas to the sages of the Naimiṣa forest, retelling Vaiśampāyana’s recital to King Janamejaya.</div></div>
    <div class="row"><div class="lab">Place</div><div>${story.places[n.place].n}<span class="cert">${cert}</span></div></div>
    <div class="row"><div class="lab">Other tellings</div><div style="font-size:15px;color:var(--muted)">Comparison drawer (Tamil, Telugu, Pandavani, Rajasthani, Wayang) arrives in Sprint 7.</div></div>`;
-  $("#drawerClose").onclick = () => $("#drawer").classList.remove("on");
-  $("#drawer").classList.add("on");
+  $("#drawerClose").onclick = () => closeOverlay($("#drawer"));
+  openOverlay($("#drawer"), "#drawerClose");
 }
 
 /* ---------- note modal and toast ---------- */
 let modalCb: ((note: string) => void) | null = null;
 export function ask(title: string, sub: string, cb: (note: string) => void, ok = "Continue"): void {
   $("#mTitle").textContent = title; $("#mSub").textContent = sub; $<HTMLTextAreaElement>("#mText").value = ""; $("#mOk").textContent = ok;
-  modalCb = cb; $("#modal").classList.add("on"); setTimeout(() => $("#mText").focus(), 50);
+  modalCb = cb; openOverlay($("#modal"), "#mText");
 }
 export function closeModal(save: boolean): void {
-  $("#modal").classList.remove("on");
+  closeOverlay($("#modal"));
   modalCb?.(save ? $<HTMLTextAreaElement>("#mText").value.trim() : "");
 }
 

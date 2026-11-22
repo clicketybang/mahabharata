@@ -1,6 +1,7 @@
 ---
 /* One beat (caption) of a scroll-animated scene. `from`/`to` are scroll progress (0–1).
-   `cast` = portraits shown in the caption; `dev` = Devanagari title; `warn` = optional content note. */
+   `cast` = portraits shown in the caption; `dev` = Devanagari title; `warn` = optional content note.
+   `alt` = what the painting shows during this beat, read by screen readers (required; Sprint 2). */
 interface Props {
   from: number;
   to: number;
@@ -8,9 +9,10 @@ interface Props {
   dev: string;
   cast?: string[];
   warn?: string;
+  alt: string;
 }
-const { from, to, title, dev, cast = [], warn } = Astro.props;
+const { from, to, title, dev, cast = [], warn, alt } = Astro.props;
 ---
-<div class="beat-src" data-from={from} data-to={to} data-title={title} data-dev={dev} data-cast={JSON.stringify(cast)} data-warn={warn}>
+<div class="beat-src" data-from={from} data-to={to} data-title={title} data-dev={dev} data-cast={JSON.stringify(cast)} data-warn={warn} data-alt={alt}>
   <slot />
 </div>

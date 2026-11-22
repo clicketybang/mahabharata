@@ -52,7 +52,8 @@ main{position:relative;z-index:1}
 /* scene head */
 .scene-head{max-width:900px;margin:0 auto;padding:36px 20px 18px;text-align:center}
 .scene-head .parva{font-family:Kalam;font-size:17px;color:var(--accent)}
-.scene-head h2{font-size:clamp(36px,7vw,62px);color:var(--head);margin:4px 0}
+.scene-head h1{font-size:clamp(36px,7vw,62px);color:var(--head);margin:4px 0}
+.scene-head h1:focus{outline:none}
 .scene-head .dev{font-size:24px;color:var(--accent)}
 .scene-head .intro{max-width:640px;margin:12px auto 0;font-style:italic}
 .meds{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:14px}
@@ -84,7 +85,7 @@ a.jump .kind{font-family:Kalam;font-size:.78em;padding:0 4px;margin-left:3px;bor
 
 /* choices */
 .choices{max-width:1100px;margin:0 auto;padding:56px 18px 120px;text-align:center}
-.choices h3{font-size:32px;color:var(--head)}
+.choices h2{font-size:32px;color:var(--head)}
 .choices .hand{color:var(--accent)}
 .choices .why{font-size:15px;color:var(--muted);margin-top:4px}
 .choice-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:18px;margin-top:22px}
@@ -94,7 +95,7 @@ a.jump .kind{font-family:Kalam;font-size:.78em;padding:0 4px;margin-left:3px;bor
 .choice .big{width:110px;height:110px;margin:0 auto 10px;border-radius:50%;border:2px solid var(--line);overflow:hidden;background:var(--bg2)}
 .choice .big svg{width:100%;height:100%}
 .choice .by{font-family:Kalam;font-size:15px;color:var(--accent)}
-.choice h4{font-size:21px;color:var(--head);margin-top:2px}
+.choice h3{font-size:21px;color:var(--head);margin-top:2px}
 .choice .when{font-size:13px;color:var(--muted);margin-top:4px}
 .choice .seen{position:absolute;top:8px;right:10px;font-family:Kalam;font-size:13px;color:var(--accent3)}
 
@@ -143,7 +144,7 @@ a.jump .kind{font-family:Kalam;font-size:.78em;padding:0 4px;margin-left:3px;bor
 #gate{position:fixed;inset:0;z-index:90;background:rgba(43,32,24,.55);display:none;align-items:center;justify-content:center;padding:16px}
 #gate.on{display:flex;animation:mapIn .4s ease}
 #gate .gbox{background:var(--capbg);border:2px solid var(--line);box-shadow:inset 0 0 0 5px var(--capbg),inset 0 0 0 6.5px var(--accent),0 30px 60px rgba(0,0,0,.3);max-width:520px;width:100%;padding:28px 26px;text-align:center}
-#gate h3{font-size:28px;color:var(--head);margin:4px 0 10px}
+#gate h2{font-size:28px;color:var(--head);margin:4px 0 10px}
 #gate p{font-size:18px;margin-top:8px}
 #gate .row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:18px}
 
@@ -287,6 +288,34 @@ a.jump .kind{font-family:Kalam;font-size:.78em;padding:0 4px;margin-left:3px;bor
 #modal .row{display:flex;justify-content:flex-end;gap:10px;margin-top:12px}
 #toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,20px);opacity:0;z-index:80;padding:8px 16px;background:var(--accent);color:var(--bg);font-family:Kalam;font-size:16px;border-radius:20px;transition:.35s;pointer-events:none;text-align:center;max-width:90vw}
 #toast.on{opacity:1;transform:translate(-50%,0)}
+
+/* ===================== ACCESSIBILITY (Sprint 2) ===================== */
+/* hidden beats leave the tab order and the screen-reader tree (only the showing caption is reachable) */
+.cap{visibility:hidden;transition:opacity .35s,transform .35s,visibility 0s linear .35s}
+.cap.on{visibility:visible;transition-delay:0s}
+/* slide-in panels: visible (and focusable) the moment they open; hidden from Tab once they've slid away */
+.info{transition:transform .35s,visibility 0s linear .35s}
+.info.on{transition:transform .35s,visibility 0s}
+#drawer{visibility:hidden;transition:transform .4s cubic-bezier(.2,.8,.2,1),visibility 0s linear .4s}
+#drawer.on{visibility:visible;transition:transform .4s cubic-bezier(.2,.8,.2,1),visibility 0s}
+.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.brand{padding:2px 4px;border-radius:8px}
+:focus-visible{outline:3px solid var(--accent2);outline-offset:2px}
+svg [role=button]:focus{outline:none}
+svg [role=button]:focus-visible>:is(rect,circle):first-of-type{stroke:var(--accent2);stroke-width:5}
+#kalaScroll:focus-visible,#desha:focus-visible{outline-offset:-3px}
+/* progress dots: same 12px dot, 24px tap target (WCAG 2.2 target size) */
+.prog{gap:0}
+.prog i{width:24px;height:24px;border:none;background:none;position:relative;transform:none;border-radius:50%}
+.prog i:before{content:"";position:absolute;inset:6px;border-radius:50%;border:1.5px solid var(--line);background:var(--bg);transition:.3s}
+.prog i.on{background:none;transform:none}
+.prog i.on:before{background:var(--accent);transform:scale(1.3)}
+/* reduce motion (Sprint 2, D1): the camera holds still frames per beat; decorative animation stops */
+@media (prefers-reduced-motion:reduce){
+  .page.on,#maps.on,#soul.on,#gate.on{animation:none}
+  .scrollhint,.coach,.pulse,.trail,.ring,.kflow,.smo.here{animation:none}
+  .cap,#crumbs,#drawer,.info,#toast,.choice,.kbtn,.med[data-soul]{transition:none}
+}
 
 @media (max-width:760px){
   .cap{padding:10px 14px 12px}.cap p{font-size:16.5px}.cap .ch b{font-size:19px}
