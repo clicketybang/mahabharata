@@ -3,6 +3,7 @@ import { story, progress, ui, store, type GoOptions } from "./state";
 import { renderHome, renderScene, decorateJumps } from "./pages";
 import { frame, scrollToP } from "./camera";
 import { openOverlay } from "./focus";
+import { iconReturn } from "../art/icons";
 import { $, $$, $opt } from "./util";
 
 export function go(id: string, opts: GoOptions = {}): void {
@@ -38,7 +39,7 @@ export function updateReturn(): void {
   const short = (t: string) => t.split(" —")[0], st3 = rs.slice(-3), off = rs.length - st3.length;
   b.innerHTML = (off ? `<span class="c">…</span><span class="sep">›</span>` : "")
     + st3.map((r, i) => `<button class="c" data-crumb="${off + i}">${short(r.title)}</button><span class="sep">›</span>`).join("")
-    + `<span class="c cur">${short(story.node[ui.current]?.title || "")}</span><button class="ret" data-crumb="${rs.length - 1}">↩ Return to ${short(rs.at(-1)!.title)}</button>`;
+    + `<span class="c cur">${short(story.node[ui.current]?.title || "")}</span><button class="ret" data-crumb="${rs.length - 1}">${iconReturn} Return to ${short(rs.at(-1)!.title)}</button>`;
   b.classList.add("on");
 }
 

@@ -7,6 +7,7 @@ import { med } from "../pages";
 import { openOverlay } from "../focus";
 import { $, $$ } from "../util";
 import { siteOf, placePath } from "../data";
+import { iconClose } from "../../art/icons";
 import { renderKala } from "./kala";
 import { renderDesha } from "./desha";
 import { renderPatra, renderMarga, renderSmriti } from "./panels";
@@ -27,7 +28,7 @@ export function hideInfo(): void { $("#info").classList.remove("on"); }
 
 export function showInfo(html: string): void {
   const i = $("#info");
-  i.innerHTML = `<button class="x" aria-label="Close">×</button>` + html;
+  i.innerHTML = `<button class="x" aria-label="Close">${iconClose}</button>` + html;
   i.querySelector<HTMLButtonElement>(".x")!.onclick = hideInfo;
   i.classList.add("on");
   // keyboard users land on the strip's main action

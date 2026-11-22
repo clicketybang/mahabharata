@@ -24,6 +24,16 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
 .spacer{flex:1}
 .tbtn{display:flex;align-items:center;gap:6px;padding:6px 12px;border:1.5px solid var(--line);border-radius:22px;background:var(--btnbg);color:var(--btnink);font-family:Kalam;font-size:16px;font-weight:700;box-shadow:var(--btnshadow)}
 .tbtn svg{width:18px;height:18px}
+/* kalam-line icons (Sprint 3, D5) */
+.icw{display:inline-flex}
+.ic{width:20px;height:20px;flex:0 0 auto;vertical-align:-4px}
+.tbtn .ic{width:22px;height:22px}
+.mclose .ic,.sclose .ic{width:28px;height:28px}
+#drawer .x .ic,.info .x .ic{width:22px;height:22px}
+.mclose,.sclose,#drawer .x,.info .x{display:inline-flex;align-items:center;justify-content:center;min-width:32px;min-height:32px;border-radius:50%}
+.kbtn .ic-ret{width:18px;height:18px;margin-right:2px}
+#crumbs button.ret{display:inline-flex;align-items:center;gap:4px}
+#crumbs .ic-ret{width:17px;height:17px}
 .tbtn:hover{filter:brightness(1.12)}
 
 main{position:relative;z-index:1}
