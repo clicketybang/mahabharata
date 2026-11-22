@@ -1,0 +1,6 @@
+[
+  { "id": "ce", "name": "BORI Critical Edition (baseline)", "region": "Pan-Indian", "tier": 0 },
+  { "id": "ce-apparatus", "name": "Critical Edition apparatus (rejected and starred passages)", "region": "Pan-Indian", "tier": 1 },
+  { "id": "southern", "name": "Southern recension", "region": "South India", "tier": 2 },
+  { "id": "venisamhara", "name": "Veṇīsaṃhāra of Bhaṭṭa Nārāyaṇa (Sanskrit play)", "region": "Sanskrit drama", "tier": 3 }
+]
