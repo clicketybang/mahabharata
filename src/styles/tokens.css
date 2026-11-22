@@ -6,5 +6,6 @@ body {
   --accent: #a63a2b; --accent2: #2e4377; --accent3: #5b7a46; --line: #2b2018; --head: #8a2f22;
   --capbg: #fbf4e4; --capshadow: 0 1px 0 rgba(43,32,24,.06), 0 12px 28px rgba(90,60,25,.14);
   --btnbg: #fbf4e4; --btnink: #2b2018; --btnshadow: 0 1px 0 rgba(43,32,24,.25);
+  --leaf-text: #55723f; /* leaf, one shade darker, for small text (WCAG AA 4.96:1 on caption cream) */
   --fh: "Rozha One", serif; --fb: Spectral, Georgia, serif; --fbs: 18px; --chip: #f1e3c4;
 }

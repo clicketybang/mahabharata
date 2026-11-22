@@ -82,6 +82,11 @@ export function renderKala(): void {
     L += `<g data-kplace="${pl}" role="button" tabindex="0" aria-label="${story.places[pl].n}: show moments here" style="cursor:pointer"><rect x="0" y="${y0 + b * bandH}" width="${LW}" height="${bandH}" fill="${pl === ui.kalaPlace ? C.ochreL : (b % 2 ? C.paper2 : C.paper)}" opacity="${pl === ui.kalaPlace ? .8 : .6}"/>${placeIcon(story.places[pl].icon, 24, y, .62)}${LW < 60 ? "" : `<text x="44" y="${y + 5}" font-family="Kalam" font-size="13" fill="${C.ink}">${story.places[pl].short || placeName(pl)}</text>`}</g>`;
   });
   $("#kalaLabels").innerHTML = L + "</svg>";
+  // safety net: a label that still doesn't fit its column is narrowed to fit, never cut off
+  const room = LW - 48;
+  $("#kalaLabels").querySelectorAll<SVGTextElement>("text").forEach(t => {
+    if (t.getComputedTextLength() > room) { t.setAttribute("textLength", String(room)); t.setAttribute("lengthAdjust", "spacingAndGlyphs"); }
+  });
   $("#kalaLabels").onclick = e => {
     const g = (e.target as Element).closest<SVGGElement>("[data-kplace]"); if (!g) return;
     const pl = g.dataset.kplace ?? ""; ui.kalaPlace = ui.kalaPlace === pl ? null : pl; renderKala(); if (ui.kalaPlace) placeInfo(pl);

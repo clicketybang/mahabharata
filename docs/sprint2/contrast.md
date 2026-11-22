@@ -17,7 +17,8 @@ Painted scenes are art and get text alternatives instead (Sprint 2, D4).
 | Muted text on chip | `#6e5b45` on `#f1e3c4` | normal | 5.09:1 | 4.5:1 | ✅ pass |
 | Map tab gloss (11px) on chip (active tab) | `#6e5b45` on `#f1e3c4` | normal | 5.09:1 | 4.5:1 | ✅ pass |
 | 'Who is speaking' chip: indigo on chip | `#2e4377` on `#f1e3c4` | normal | 7.56:1 | 4.5:1 | ✅ pass |
-| '✓ walked' tick: leaf on caption cream | `#5b7a46` on `#fbf4e4` | normal | 4.44:1 | 4.5:1 | ❌ FAIL |
+| '✓ walked' tick: leaf-text on caption cream | `#55723f` on `#fbf4e4` | normal | 4.96:1 | 4.5:1 | ✅ pass |
+| Leaf (#5b7a46) for borders and hover rings only — not text (UI component) | `#5b7a46` on `#fbf4e4` | ui | 4.44:1 | 3:1 | ✅ pass |
 | Primary button: cotton on madder | `#f6ecd8` on `#a63a2b` | normal | 5.49:1 | 4.5:1 | ✅ pass |
 | Return button: caption cream on madder | `#fbf4e4` on `#a63a2b` | normal | 5.88:1 | 4.5:1 | ✅ pass |
 | Toast: cotton on madder | `#f6ecd8` on `#a63a2b` | normal | 5.49:1 | 4.5:1 | ✅ pass |
@@ -27,4 +28,4 @@ Painted scenes are art and get text alternatives instead (Sprint 2, D4).
 | Ink borders / focus ring vs cotton (UI component) | `#2b2018` on `#f6ecd8` | ui | 13.54:1 | 3:1 | ✅ pass |
 | Indigo focus outline vs cotton (UI component) | `#2e4377` on `#f6ecd8` | ui | 8.19:1 | 3:1 | ✅ pass |
 
-**20/21 pairs pass.**
+**22/22 pairs pass.**
