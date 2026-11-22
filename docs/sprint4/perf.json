@@ -1,22 +1,22 @@
 {
   "dice-hall": {
-    "frames": 515,
+    "frames": 525,
     "frame_median_ms": 16.7,
     "frame_p95_ms": 16.8,
-    "janky_frames_pct": 0.2,
-    "long_tasks": 3,
-    "long_task_max_ms": 99,
-    "interaction_max_ms": 56,
-    "svg_nodes": 1189
+    "janky_frames_pct": 0.4,
+    "long_tasks": 4,
+    "long_task_max_ms": 104,
+    "interaction_max_ms": 64,
+    "svg_nodes": 1421
   },
   "day-17": {
-    "frames": 517,
+    "frames": 532,
     "frame_median_ms": 16.7,
     "frame_p95_ms": 16.8,
-    "janky_frames_pct": 0.2,
-    "long_tasks": 1,
-    "long_task_max_ms": 52,
+    "janky_frames_pct": 0.4,
+    "long_tasks": 2,
+    "long_task_max_ms": 93,
     "interaction_max_ms": 56,
-    "svg_nodes": 1676
+    "svg_nodes": 1823
   }
 }

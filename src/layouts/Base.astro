@@ -1,16 +1,11 @@
 ---
 import "../styles/tokens.css";
 import "../styles/reader.css";
-import "../styles/trial.css";
-// fonts, self-hosted (no Google Fonts request)
-import "@fontsource/rozha-one/400.css"; import "@fontsource/kalam/400.css"; import "@fontsource/kalam/700.css";
-import "@fontsource/spectral/400.css"; import "@fontsource/spectral/600.css"; import "@fontsource/spectral/400-italic.css";
+// fonts, self-hosted (no Google Fonts request). Type set "Old press" (owner, 2026-11-22):
+// IM Fell English SC for headings and labels, Alegreya for body text, Tiro Devanagari Sanskrit for Sanskrit.
+import "@fontsource/im-fell-english-sc/400.css";
+import "@fontsource/alegreya/400.css"; import "@fontsource/alegreya/500.css"; import "@fontsource/alegreya/700.css"; import "@fontsource/alegreya/400-italic.css";
 import "@fontsource/tiro-devanagari-sanskrit/400.css";
-// design trial candidates
-import "@fontsource/vesper-libre/700.css"; import "@fontsource/khand/500.css"; import "@fontsource/khand/600.css";
-import "@fontsource/alegreya/400.css"; import "@fontsource/alegreya/700.css"; import "@fontsource/alegreya/400-italic.css";
-import "@fontsource/eczar/400.css"; import "@fontsource/eczar/600.css"; import "@fontsource/eczar/700.css";
-import "@fontsource/martel/400.css"; import "@fontsource/martel/800.css"; import "@fontsource/im-fell-english-sc/400.css";
 interface Props { title?: string }
 const { title = "Mahābhārata — The Painted Epic" } = Astro.props;
 ---
@@ -22,35 +17,8 @@ const { title = "Mahābhārata — The Painted Epic" } = Astro.props;
     <title>{title}</title>
     <meta name="description" content="The Mahābhārata as a painted, scroll-driven journey in the manner of Srikalahasti Kalamkari: follow a soul or go to a place, always onward in time." />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <script is:inline>
-      // DESIGN TRIAL: ?type=…&borders=…&art=… or the panel; remembered on this device
-      (function () {
-        var q = new URLSearchParams(location.search), d = document.documentElement;
-        ["type", "borders", "art"].forEach(function (k) { var v = q.get(k) || localStorage.getItem("trial." + k); if (v) { d.dataset[k] = v; localStorage.setItem("trial." + k, v); } });
-      })();
-    </script>
   </head>
   <body>
     <slot />
-    <div id="trial" role="region" aria-label="Design trial">
-      <button class="x" aria-label="Minimise">–</button><span class="t"><b style="display:inline">Design trial</b></span>
-      <b>Typeface</b><span data-k="type"><button data-v="">Current</button><button data-v="inscription">Inscription</button><button data-v="ledger">Ledger</button><button data-v="sturdy">Sturdy</button><button data-v="oldpress">Old press</button></span>
-      <b>Borders</b><span data-k="borders"><button data-v="">Thresholds only</button><button data-v="all">Every page</button></span>
-      <b>Pictures</b><span data-k="art"><button data-v="">Current</button><button data-v="rich">Detailed</button></span>
-    </div>
-    <script is:inline>
-      (function () {
-        var d = document.documentElement, p = document.getElementById("trial");
-        function sync() { p.querySelectorAll("[data-k]").forEach(function (g) { var cur = d.dataset[g.dataset.k] || ""; g.querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.v === cur)); }); }); }
-        p.addEventListener("click", function (e) {
-          var b = e.target.closest("button"); if (!b) return;
-          if (b.classList.contains("x")) { p.classList.toggle("min"); b.textContent = p.classList.contains("min") ? "+" : "–"; return; }
-          var k = b.parentElement.dataset.k; if (!k) return;
-          if (b.dataset.v) { d.dataset[k] = b.dataset.v; localStorage.setItem("trial." + k, b.dataset.v); } else { delete d.dataset[k]; localStorage.removeItem("trial." + k); }
-          sync(); if (k === "art") location.reload();
-        });
-        sync();
-      })();
-    </script>
   </body>
 </html>

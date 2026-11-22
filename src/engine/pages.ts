@@ -5,7 +5,10 @@ import { fig } from "../art/figure";
 import { chariot } from "../art/objects";
 import { BANDS } from "../art/tiles";
 import { vignette } from "../art/vignettes";
+import { setLooks } from "../art/looks";
 import { story, progress, ui } from "./state";
+import { figureFor } from "./data";
+import type { FigureOpts } from "../art/figure";
 import { headSVG, placeBadge, placeName, choicesFor } from "./badges";
 import { $$ } from "./util";
 import type { Choice, BuiltScene, DraftedScene } from "./types";
@@ -13,11 +16,11 @@ import type { Choice, BuiltScene, DraftedScene } from "./types";
 export const SUB = "painted in the Kalamkari of Srikalahasti";
 
 /** a tappable portrait (Rule 6): opens that person's story */
-export const med = (id: string, extra = ""): string =>
-  `<div class="med" data-soul="${id}" role="button" tabindex="0" aria-label="Open ${story.people[id].n}’s story" title="${story.people[id].n} — open their story"${extra}>${headSVG(id)}</div>`;
+export const med = (id: string, extra = "", t?: number): string =>
+  `<div class="med" data-soul="${id}" data-tip="${story.people[id].n}" role="button" tabindex="0" aria-label="Open ${story.people[id].n}’s story"${extra}>${headSVG(id, t)}</div>`;
 
-export function meds(ids: string[]): string {
-  return `<div class="meds">${ids.map(id => med(id)).join("")}</div>`;
+export function meds(ids: string[], t?: number): string {
+  return `<div class="meds">${ids.map(id => med(id, "", t)).join("")}</div>`;
 }
 
 export function renderHome(): string {
@@ -36,7 +39,7 @@ export function renderHome(): string {
 
 function choiceCard(c: Choice, i: number): string {
   const n = c.to, seen = progress.visited.has(n.id), dis = n.status === "unwritten";
-  const icon = c.by === "character" ? headSVG(c.ref) : placeBadge(c.ref);
+  const icon = c.by === "character" ? headSVG(c.ref, n.t) : placeBadge(c.ref);
   const label = c.by === "character" ? `Follow ${story.people[c.ref].n}` : `Go to ${story.places[c.ref].n.split(",")[0]}`;
   return `<button class="choice" data-choose="${i}" ${dis ? "disabled" : ""}>${seen ? `<span class="seen">✓ walked</span>` : ""}
     <div class="big">${icon}</div><div class="by">${label}</div><h3>${n.title}</h3><div class="when">${dis ? "not yet painted" : placeName(n.place)}</div></button>`;
@@ -63,18 +66,20 @@ function ribbon(): string {
 
 function renderDrafted(id: string, sc: DraftedScene): string {
   const n = story.node[id];
+  setLooks(pid => (story.people[pid] ? figureFor(pid, n.t) : undefined));
   return `<section class="page on">${ribbon()}<div class="stub"><div class="kframe">${BANDS}<div class="stub-inner">
-     ${vignette(sc.art, sc.artAlt, { icon: story.places[n.place].icon, figs: n.cast.slice(0, 4).map(c => story.people[c].f) })}<div class="scene-head" style="padding:18px 0 0"><div class="parva">${sc.parva} · ${placeName(n.place)}</div><h1 tabindex="-1">${n.title}</h1><div class="dev" lang="sa">${sc.dev}</div>${meds(n.cast)}${headButtons(id)}</div>
+     ${vignette(sc.art, sc.artAlt, { icon: story.places[n.place].icon, names: n.cast.map(c => story.people[c].n), figs: n.cast.map(c => ({ ...figureFor(c, n.t), ...(n.look[c]?.weapon ? { weapon: n.look[c].weapon as FigureOpts["weapon"] } : {}), ...(n.look[c]?.seated ? { seated: true } : {}) })) })}<div class="scene-head" style="padding:18px 0 0"><div class="parva">${sc.parva} · ${placeName(n.place)}</div><h1 tabindex="-1">${n.title}</h1><div class="dev" lang="sa">${sc.dev}</div>${meds(n.cast, n.t)}${headButtons(id)}</div>
      ${pathNoteHTML(id)}<p class="text">${sc.text}</p><div class="unwritten">✎ Drafted. The painted, scroll-animated version of this page comes in a later sprint.</div>
    </div></div></div>${choicesHTML(id)}</section>`;
 }
 
 function renderBuilt(id: string, sc: BuiltScene): string {
   const n = story.node[id], m = story.meta[id];
+  setLooks(pid => (story.people[pid] ? figureFor(pid, n.t) : undefined));
   const beats = sc.beats;
   return `<section class="page on">${ribbon()}
    <header class="scene-head"><div class="parva">${sc.parva} · ${placeName(n.place)}</div><h1 tabindex="-1">${n.title}</h1><div class="dev" lang="sa">${sc.dev}</div>
-     <p class="intro">${sc.intro}</p>${meds(n.cast)}${headButtons(id)}${pathNoteHTML(id)}<div class="scrollhint">scroll ↓ to unroll · scroll ↑ to go back</div></header>
+     <p class="intro">${sc.intro}</p>${meds(n.cast, n.t)}${headButtons(id)}${pathNoteHTML(id)}<div class="scrollhint">scroll ↓ to unroll · scroll ↑ to go back</div></header>
    <div class="scrolly" id="scrolly" style="height:${sc.len * 100}vh"><div class="sticky"><div class="stage kframe" id="stage">${BANDS}
      <svg class="world" id="world" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${sc.world()}</svg>
      ${sc.day ? `<div class="daylabel">${sc.day}</div>` : ""}<div class="prog" role="tablist" aria-label="Scene beats"><span class="updown" aria-hidden="true">↑↓</span>${beats.map((b, i) => `<i role="tab" tabindex="0" aria-label="Go to: ${b.title}" data-beat="${i}"></i>`).join("")}</div>

@@ -62,7 +62,7 @@ function forest(seed = 5): string {
   let s = `<rect width="900" height="300" fill="${C.sky}"/>${sun(820, 80, 26)}<rect y="226" width="900" height="74" fill="${C.ground}"/>`;
   s += [60, 200, 690, 840].map((x, k) => kTree(x, 232, .9 + r() * .25, seed + k)).join("");
   s += bird(320, 70, .8) + bird(560, 54, .7) + deer(760, 268, .8, -1);
-  s += scatter(18, 0, 900, 236, 290, (x, y, rr) => `<path d="M${x} ${y} q 3 -10 6 0 q 3 -8 6 0" fill="none" stroke="${C.leaf}" stroke-width="1.6"/>`, seed + 9);
+  s += scatter(18, 0, 900, 236, 290, (x, y) => `<path d="M${x} ${y} q 3 -10 6 0 q 3 -8 6 0" fill="none" stroke="${C.leaf}" stroke-width="1.6"/>`, seed + 9);
   return s;
 }
 function hermitage(): string {

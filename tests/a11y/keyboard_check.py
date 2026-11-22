@@ -67,6 +67,8 @@ with sync_playwright() as pw:
     # portraits → character story → back
     check("Tab reaches a header portrait", tab_to(page, "a.matches('.scene-head .med[data-soul]')"))
     who = page.evaluate("document.activeElement.dataset.soul")
+    tipname = page.evaluate("document.activeElement.dataset.tip")
+    check("A focused portrait shows the person's name", page.is_visible("#tip.on") and page.inner_text("#tip") == tipname and bool(tipname), tipname)
     page.keyboard.press("Enter"); page.wait_for_timeout(300)
     check("Enter on a portrait opens that person's story, focus inside", page.is_visible("#soul.on") and page.evaluate("document.querySelector('#soul').contains(document.activeElement)"))
     page.keyboard.press("Escape"); page.wait_for_timeout(200)

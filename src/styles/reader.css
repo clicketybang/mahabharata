@@ -163,6 +163,13 @@ a.jump .kind{font-family:var(--fl);font-size:.78em;padding:0 4px;margin-left:3px
 .home .kframe>.band,.threshold .kframe>.band,.threshold .stage>.band{display:block}
 .stage{border:2px solid var(--line);box-shadow:inset 0 0 0 5px var(--bg),inset 0 0 0 6.5px var(--accent);padding:0}
 .threshold .stage{padding:22px}
+/* the plain frame (story pages, not thresholds; owner 2026-11-22: "prettier"): a double ink rule, a thin madder
+   inner rule, and a rosette-and-creeper ornament in each corner. Thresholds keep the full creeper border. */
+.stub .kframe,.stage{border:5px double var(--line);box-shadow:inset 0 0 0 5px var(--bg),inset 0 0 0 6.5px var(--accent),inset 0 0 0 10px var(--bg),inset 0 0 0 11px rgba(201,151,58,.7)}
+.stub .kframe::before,.stage::before{content:"";position:absolute;inset:3px;z-index:3;pointer-events:none;
+  background:var(--corner-tl) top left/56px 56px no-repeat,var(--corner-tr) top right/56px 56px no-repeat,var(--corner-br) bottom right/56px 56px no-repeat,var(--corner-bl) bottom left/56px 56px no-repeat}
+.threshold .stub .kframe::before,.threshold .stage::before{display:none}
+.threshold .stub .kframe{border:1.5px solid var(--line);box-shadow:none}
 .thr-ribbon{display:none;max-width:900px;margin:12px auto 0;padding:8px 14px;text-align:center;font-family:var(--fl);font-size:16px;color:var(--accent);border-top:1.5px solid var(--accent);border-bottom:1.5px solid var(--accent)}
 .threshold .thr-ribbon{display:block;margin-top:56px}
 .headbtns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px}
@@ -353,3 +360,8 @@ svg [role=button]:focus-visible>:is(rect,circle):first-of-type{stroke:var(--acce
   .mtab{min-width:52px;padding:4px 8px}
   .choice{width:100%;max-width:340px}
 }
+
+/* names on hover / focus (design v2) */
+#tip{position:fixed;z-index:120;pointer-events:none;opacity:0;transform:translateY(4px);transition:opacity .12s,transform .12s;
+  background:var(--ink);color:var(--capbg);font-family:var(--fl);font-size:16px;line-height:1.2;padding:4px 10px;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,.25);white-space:nowrap;max-width:80vw;overflow:hidden;text-overflow:ellipsis}
+#tip.on{opacity:1;transform:none}

@@ -58,7 +58,7 @@ export function renderDesha(): void {
   // sites (fogged until walked; names on tap or once explored — Rule 5)
   sites.forEach(([id, p]) => {
     const [x, y] = p.map, lit = visitedPlaces.has(id);
-    s += `<g class="dplace" data-place="${id}" role="button" tabindex="0" aria-label="${lit ? p.n : "Unexplored place"}">${lit ? `<circle cx="${x}" cy="${y}" r="30" fill="url(#lampG)"/>` : ""}
+    s += `<g class="dplace" data-place="${id}" data-tip="${lit ? p.n : "Unexplored place"}" role="button" tabindex="0" aria-label="${lit ? p.n : "Unexplored place"}">${lit ? `<circle cx="${x}" cy="${y}" r="30" fill="url(#lampG)"/>` : ""}
       <circle cx="${x}" cy="${y}" r="21" fill="${C.paper}" stroke="${lit ? C.gold : C.iron}" stroke-opacity="${lit ? 1 : .55}" stroke-width="${lit ? 3 : 2}" ${CERT_DASH[story.cert[id]] ? `stroke-dasharray="${CERT_DASH[story.cert[id]]}"` : ""}/>${placeIcon(p.icon, x, y + 1, .62)}
       ${lit ? "" : `<g opacity=".8">${[[-14, -6], [0, -12], [14, -6], [-6, 6], [10, 6]].map(([dx, dy]) => `<circle cx="${x + dx}" cy="${y + dy}" r="10" fill="#d9ccad"/>`).join("")}</g>`}
       ${lit ? `<text x="${x}" y="${y + 38}" text-anchor="middle" style="font-family:var(--fl)" font-size="14" font-weight="700" fill="${C.gold}">${p.short || placeName(id)}</text>` : ""}

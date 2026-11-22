@@ -5,6 +5,8 @@ import { defineCollection } from "astro:content";
 import { glob, file } from "astro/loaders";
 import { z } from "astro/zod";
 
+const POSES = ["bow", "mace", "reins", "dice", "point", "plead", "fist", "grab", "none", "namaste", "bless", "mourn", "cradle", "staff", "sword", "spear", "discus", "conch", "garland", "pot", "basket"] as const;
+const AGES = ["baby", "child", "teen", "adult", "old"] as const;
 const id = z.string().regex(/^[a-z0-9-]+$/, "ids are lowercase-kebab");
 
 const moments = defineCollection({
@@ -15,7 +17,8 @@ const moments = defineCollection({
     narrator_chain: z.array(z.string()).default([]), // [teller, listener] of the innermost frame
     narration_note: z.string().optional(),
     place_id: id,
-    cast: z.array(z.object({ id, role: z.enum(["present", "mentioned", "divine"]).default("present") })).min(1),
+    // pose / seated: how the figure is drawn in this moment's picture (design v2); optional
+    cast: z.array(z.object({ id, role: z.enum(["present", "mentioned", "divine"]).default("present"), pose: z.enum(POSES).optional(), seated: z.boolean().optional() })).min(1),
     title: z.string(),
     status: z.enum(["built", "drafted", "unwritten"]),
     era: z.string(),
@@ -64,7 +67,9 @@ const people = defineCollection({
     death_t: z.number().optional(),
     amsha: z.string().optional(),
     aliases: z.array(z.string()).default([]),
-    figure: z.record(z.string(), z.union([z.string(), z.boolean()])),
+    figure: z.record(z.string(), z.union([z.string(), z.boolean()])), // the adult look (src/art/figure.ts options)
+    // life stages (design v2): from story time `from`, draw this person at `age`, with any figure options overridden
+    stages: z.array(z.object({ from: z.number(), age: z.enum(AGES) }).catchall(z.union([z.string(), z.boolean()]))).default([]),
   }),
 });
 

@@ -2,7 +2,7 @@
    plus the shared info strip. */
 import { C } from "../../art/palette";
 import { story, progress, ui, type MapTab } from "../state";
-import { headSVG, placeBadge } from "../badges";
+import { placeBadge } from "../badges";
 import { med } from "../pages";
 import { openOverlay } from "../focus";
 import { $, $$ } from "../util";
