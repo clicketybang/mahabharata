@@ -4,6 +4,8 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "mahabharata-git",
   "compatibility_date": "2026-11-16",
+  // Worker Previews: every non-main branch / pull request gets its own Preview URL.
+  "previews": {},
   "assets": {
     "directory": "./dist",
     "not_found_handling": "404-page"
