@@ -21,6 +21,8 @@
      place-level              places don't nest realm › site › spot (a spot needs a site parent; a site's parent is a realm)
      place-cycle              a place is its own ancestor
      unknown-family           a person's family line doesn't exist (families.json)
+     assembly-incomplete      at an assembly moment, a principal alive at that time is neither in the cast nor listed absent
+                              with a reason (A1); or someone is listed both present and absent, or absent without being a principal
      moment-at-realm          a moment is set in a whole realm instead of a site or spot (one setting per moment)
      built-incomplete         a built (scroll-animated) moment lacks camera keyframes, length or beats
      missing-alt              a <Beat> lacks alt text, or a drafted moment lacks art_alt (screen readers; Sprint 2)
@@ -56,6 +58,21 @@ function bodyRefs(body) {
     anchor: j[1].match(/anchor="([^"]+)"/)?.[1],
   }));
   return { beats, jumps };
+}
+
+/** read the story graph from a content directory (shared with scripts/traverse.mjs) */
+export function readStory(contentDir) {
+  const j = f => readJSON(path.join(contentDir, f));
+  const dir = path.join(contentDir, "moments");
+  const moments = fs.readdirSync(dir).filter(f => f.endsWith(".mdx")).sort().map(f => {
+    const { data, body } = parseMDX(path.join(dir, f));
+    return { id: f.replace(/\.mdx$/, ""), data, ...bodyRefs(body) };
+  });
+  const timeline = moments
+    .filter(m => typeof m.data.t_story === "number")
+    .map(m => ({ id: m.id, t: m.data.t_story, place: m.data.place_id, cast: (m.data.cast || []).map(c => c.id), status: m.data.status }))
+    .sort((a, b) => a.t - b.t);
+  return { people: j("people.json"), places: j("places.json"), edges: j("edges.json"), families: j("families.json"), moments, timeline };
 }
 
 /* `opts.rule` lets the tests swap in a deliberately broken rule, to prove the independent re-check catches it. */
@@ -156,6 +173,24 @@ export function validate(contentDir, opts = {}) {
     for (const [by, ref] of branches) {
       if ((by === "character" || by === "place") && !choices.some(c => c.by === by && c.ref === ref) && !violations.length)
         warnings.push({ code: "branch-thread-ends", where: at, message: `no later moment for ${by} "${ref}"; no choice is shown` });
+    }
+  }
+
+  /* A1: assembly moments carry every active principal thread (present, or absent with a reason) */
+  const principals = people.filter(p => p.principal);
+  const firstT = Object.fromEntries(principals.map(p => [p.id, Math.min(...timeline.filter(n => n.cast.includes(p.id)).map(n => n.t))]));
+  for (const m of moments) {
+    if (!m.data.assembly || typeof m.data.t_story !== "number") continue;
+    const at = `moment:${m.id}`, t = m.data.t_story, cast = new Set((m.data.cast || []).map(c => c.id));
+    const absent = new Map((m.data.absent || []).map(a => [a.id, a.reason]));
+    for (const [id] of absent) {
+      if (cast.has(id)) err("assembly-incomplete", at, `"${id}" is listed both in the cast and as absent`);
+      if (!principals.some(p => p.id === id)) err("assembly-incomplete", at, `"${id}" is listed absent but is not a principal`);
+    }
+    for (const p of principals) {
+      const alive = firstT[p.id] <= t && (p.death_t == null || t <= p.death_t);
+      if (alive && !cast.has(p.id) && !(absent.get(p.id) || "").trim())
+        err("assembly-incomplete", at, `principal "${p.id}" is alive here (from t ${firstT[p.id]}) but neither present nor listed absent with a reason`);
     }
   }
 

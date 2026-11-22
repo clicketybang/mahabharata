@@ -16,7 +16,7 @@ export interface PlaceData {
   certainty: Certainty; certainty_note: string; map_xy: [number, number]; r?: number; desc?: string; icon: string; band?: number;
 }
 export interface PersonData {
-  id: string; name: string; dev: string; bio: string; identity_colour: string; family: string;
+  id: string; name: string; dev: string; bio: string; identity_colour: string; family: string; principal: boolean; minor: boolean;
   home: string; returns_home: boolean; death_t?: number; aliases: string[];
   figure: Record<string, string | boolean>;
 }
@@ -25,7 +25,7 @@ export interface MomentData {
   title: string; status: Status; era: string; parva: string; dev?: string;
   narrator_chain: string[]; narration_note?: string;
   ce_ref: { parva: number; adhyaya: string; label: string; verified: boolean };
-  variant_tier: number; debate_note?: string; content_notes: string[]; assembly: boolean;
+  variant_tier: number; debate_note?: string; content_notes: string[]; assembly: boolean; absent: { id: string; reason: string }[];
   branches: Branch[];
   intro?: string; len?: number; day?: string; cams?: Cam[]; anchors?: Record<string, number>;
   art?: string; art_alt?: string;
@@ -42,7 +42,7 @@ export interface Place {
   level: PlaceLevel; parent: string | null; note: string; r?: number; band?: number;
 }
 export interface Person {
-  n: string; dev: string; bio: string; line: string; dash: string; family: string; home: string;
+  n: string; dev: string; bio: string; line: string; dash: string; family: string; principal: boolean; minor: boolean; home: string;
   returnsHome: boolean; death?: number; f: FigureOpts;
 }
 /** a moment on the timeline (the shape the rule works on) */
@@ -57,7 +57,7 @@ export interface BuiltScene extends SceneBase, WorldArt {
 export interface DraftedScene extends SceneBase { kind: "drafted"; art?: string; artAlt: string; text: string }
 export type Scene = BuiltScene | DraftedScene;
 
-export interface Meta { narr: string | null; ce: string; tier: number; debate?: string }
+export interface Meta { narr: string | null; ce: string; tier: number; debate?: string; absent: { id: string; reason: string }[] }
 
 export interface Choice { by: BranchBy; ref: string; to: Node }
 export interface PathStep { from: string; to: string; by: BranchBy; ref: string; note: string; noted?: boolean; t: number }
