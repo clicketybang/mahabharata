@@ -1,10 +1,9 @@
-// @ts-nocheck — faithful port of prototype v6; typed in a later refactor.
 /* Place icons for the maps, choice cards and badges. */
 import { C } from "./palette";
 
-export function placeIcon(kind, x = 0, y = 0, s = 1) {
+export function placeIcon(kind: string, x = 0, y = 0, s = 1): string {
   const f = C.ochre, i = C.iron;
-  const m = {
+  const m: Record<string, string> = {
     palace: `<path d="M-26 14 V-6 H-16 V-16 H-6 V-6 H6 V-16 H16 V-6 H26 V14Z" fill="${C.madder}" stroke="${i}" stroke-width="2"/><path d="M-6 -16 L0 -30 L6 -16Z" fill="${f}" stroke="${i}" stroke-width="2"/><path d="M-6 14 V2 Q0 -6 6 2 V14" fill="${i}"/>`,
     hall: `<path d="M-28 14 H28 V-4 L0 -24 L-28 -4Z" fill="${f}" stroke="${i}" stroke-width="2"/>${[-18, -6, 6, 18].map(x => `<path d="M${x} 14 V-2" stroke="${i}" stroke-width="3"/>`).join("")}<circle cy="-10" r="4" fill="${C.madder}"/>`,
     trees: `${[-14, 0, 14].map((x, k) => `<path d="M${x} 14 V${2 - k % 2 * 4}" stroke="${i}" stroke-width="3"/><circle cx="${x}" cy="${-4 - k % 2 * 6}" r="11" fill="${C.leaf}" stroke="${i}" stroke-width="2"/>`).join("")}`,

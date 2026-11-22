@@ -1,0 +1,22 @@
+{
+  "dice-hall": {
+    "frames": 517,
+    "frame_median_ms": 16.7,
+    "frame_p95_ms": 16.8,
+    "janky_frames_pct": 0.2,
+    "long_tasks": 2,
+    "long_task_max_ms": 116,
+    "interaction_max_ms": 160,
+    "svg_nodes": 1189
+  },
+  "day-17": {
+    "frames": 521,
+    "frame_median_ms": 16.7,
+    "frame_p95_ms": 16.7,
+    "janky_frames_pct": 0.2,
+    "long_tasks": 1,
+    "long_task_max_ms": 56,
+    "interaction_max_ms": 96,
+    "svg_nodes": 1676
+  }
+}

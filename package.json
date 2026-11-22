@@ -12,7 +12,10 @@
     "deploy": "astro build && wrangler deploy",
     "test:parity": "python3 tests/parity/parity_check.py",
     "validate": "node scripts/validate.mjs",
-    "test:validator": "node --test scripts/validate.test.mjs"
+    "test:validator": "node --test scripts/validate.test.mjs",
+    "test:a11y": "python3 tests/a11y/axe_check.py",
+    "test:perf": "python3 tests/perf/perf_check.py",
+    "contrast": "node scripts/contrast.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^8.1.6",
@@ -25,6 +28,8 @@
     "@astrojs/check": "^0.9.12",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
+    "axe-core": "^4.14.1",
+    "lighthouse": "^13.6.0",
     "typescript": "^6.0.3",
     "wrangler": "^4.163.0",
     "yaml": "^2.9.1"
