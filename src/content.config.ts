@@ -54,8 +54,8 @@ const people = defineCollection({
     name: z.string(),
     dev: z.string(),
     bio: z.string(),
-    identity_colour: z.string().regex(/^#[0-9a-f]{6}$/i),
-    line_pattern: z.string(), // SVG dash pattern; "" = solid
+    identity_colour: z.string().regex(/^#[0-9a-f]{6}$/i), // the individual (A7: never moral); checked by scripts/identity-colours.mjs
+    family: id, // birth line → the line pattern in Kāla
     home: id,
     returns_home: z.boolean().default(false),
     death_t: z.number().optional(),
@@ -82,6 +82,12 @@ const places = defineCollection({
   }),
 });
 
+/* family lines: the line pattern every member shares in Kāla (Sprint 3, D4) */
+const families = defineCollection({
+  loader: file("src/content/families.json"),
+  schema: z.object({ name: z.string(), pattern: z.string().min(1), note: z.string() }),
+});
+
 const edges = defineCollection({
   loader: file("src/content/edges.json"),
   schema: z.object({
@@ -101,4 +107,4 @@ const tellings = defineCollection({
   }),
 });
 
-export const collections = { moments, people, places, edges, tellings };
+export const collections = { moments, people, places, families, edges, tellings };

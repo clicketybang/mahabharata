@@ -1,5 +1,5 @@
 [
-  { "id": "arjuna", "name": "Arjuna", "home": "hall" },
-  { "id": "karna", "name": "Karṇa", "home": "hall" },
-  { "id": "krishna", "name": "Kṛṣṇa", "home": "dvaraka" }
+  { "id": "arjuna", "name": "Arjuna", "home": "hall", "family": "kuru" },
+  { "id": "karna", "name": "Karṇa", "home": "hall", "family": "kuru" },
+  { "id": "krishna", "name": "Kṛṣṇa", "home": "dvaraka", "family": "yadava" }
 ]

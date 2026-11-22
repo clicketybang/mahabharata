@@ -9,7 +9,7 @@ export const store = {
 };
 
 export const story: Story = {
-  places: {}, cert: {}, bandOrder: [], people: {}, timeline: [], node: {},
+  places: {}, cert: {}, bandOrder: [], people: {}, families: {}, timeline: [], node: {},
   scenes: {}, meta: {}, assembly: new Set(), tiers: [],
 };
 

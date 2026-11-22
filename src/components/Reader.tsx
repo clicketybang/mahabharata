@@ -39,7 +39,7 @@ export default function Reader({ data }: { data: ReaderData }) {
           <button className="mclose" id="mapClose" aria-label="Close maps">×</button>
         </div>
         <div className="mbody">
-          <div className="mview" id="kala" role="tabpanel" aria-label="Kāla, time"><div id="kalaLabels" aria-hidden="true"></div><div id="kalaScroll" tabIndex={0} role="group" aria-label="Kāla chart: scroll sideways through time"></div><div id="kalaText" className="sr-only"></div></div>
+          <div className="mview" id="kala" role="tabpanel" aria-label="Kāla, time"><div id="kalaLabels" aria-hidden="true"></div><div id="kalaScroll" tabIndex={0} role="group" aria-label="Kāla chart: scroll sideways through time"></div><div id="kalaText" className="sr-only"></div><div id="kalaLegend" aria-hidden="true"></div></div>
           <div className="mview" id="desha" role="tabpanel" aria-label="Deśa, land" tabIndex={0}><div id="deshaMap"></div><div id="deshaText" className="sr-only"></div></div>
           <div className="mview" id="patra" role="tabpanel" aria-label="Pātra, souls"></div>
           <div className="mview" id="marga" role="tabpanel" aria-label="Mārga, your path"></div>

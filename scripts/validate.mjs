@@ -20,6 +20,7 @@
      place-certainty          a place lacks a certainty flag (textual | traditional | conjectural) or its one-line reason
      place-level              places don't nest realm › site › spot (a spot needs a site parent; a site's parent is a realm)
      place-cycle              a place is its own ancestor
+     unknown-family           a person's family line doesn't exist (families.json)
      moment-at-realm          a moment is set in a whole realm instead of a site or spot (one setting per moment)
      built-incomplete         a built (scroll-animated) moment lacks camera keyframes, length or beats
      missing-alt              a <Beat> lacks alt text, or a drafted moment lacks art_alt (screen readers; Sprint 2)
@@ -66,6 +67,8 @@ export function validate(contentDir, opts = {}) {
   const people = readJSON(path.join(contentDir, "people.json"));
   const places = readJSON(path.join(contentDir, "places.json"));
   const edges = readJSON(path.join(contentDir, "edges.json"));
+  const families = readJSON(path.join(contentDir, "families.json"));
+  const familyIds = new Set(families.map(f => f.id));
   const personIds = new Set(people.map(p => p.id));
   const placeIds = new Set(places.map(p => p.id));
 
@@ -96,6 +99,7 @@ export function validate(contentDir, opts = {}) {
   /* people */
   for (const p of people) {
     if (p.home && !placeIds.has(p.home)) err("unknown-place", `person:${p.id}`, `home "${p.home}" is not a place`);
+    if (families.length && !familyIds.has(p.family)) err("unknown-family", `person:${p.id}`, `family "${p.family}" is not in families.json`);
   }
 
   /* moments: required fields and references */

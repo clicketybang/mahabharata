@@ -102,7 +102,17 @@ export function renderKala(): void {
     const p = t.closest<SVGGElement>("[data-person]"); if (p) { ui.kalaHL = ui.kalaHL === p.dataset.person ? null : p.dataset.person ?? null; renderKala(); }
   });
   $("#kalaText").innerHTML = kalaText();
+  $("#kalaLegend").innerHTML = legend();
   if (ui.kalaHL) showInfo(`<div class="ic">${headSVG(ui.kalaHL)}</div><div class="tx"><b>${PEOPLE[ui.kalaHL].n}</b><span class="hand" style="color:var(--muted)">their river through time — tap a moment</span></div><button class="kbtn" data-soul="${ui.kalaHL}">Their story</button>`);
+}
+
+/** family lines (D4): every member of a family shares a line pattern; colour is the individual */
+function legend(): string {
+  const used = [...new Set(Object.values(story.people).map(p => p.family))];
+  return `<div class="lg-t">line pattern = family line · colour = the person</div>` + used.map(f => {
+    const fam = story.families[f]; if (!fam) return "";
+    return `<div class="lg-r"><svg width="44" height="10"><path d="M2 5 H42" stroke="${C.iron}" stroke-width="3.5" stroke-dasharray="${fam.pattern}"/></svg><span>${fam.name}</span></div>`;
+  }).join("");
 }
 
 /** the same chart as text, for screen readers: each person's moments in story order */
@@ -112,7 +122,7 @@ function kalaText(): string {
     + Object.keys(PEOPLE).map(pid => {
       const mine = story.timeline.filter(n => n.cast.includes(pid));
       const ended = PEOPLE[pid].death != null ? ` Their thread ends after “${mine.at(-1)?.title}”.` : "";
-      return `<h3>${PEOPLE[pid].n}</h3><ol>${mine.map(n => `<li>${story.assembly.has(n.id) ? "✦ " : ""}${n.title}, ${story.places[n.place].n}${progress.visited.has(n.id) ? " (walked)" : n.status === "unwritten" ? " (not yet painted)" : ""}</li>`).join("")}</ol><p>${ended}</p>`;
+      return `<h3>${PEOPLE[pid].n} (${story.families[PEOPLE[pid].family]?.name ?? ""})</h3><ol>${mine.map(n => `<li>${story.assembly.has(n.id) ? "✦ " : ""}${n.title}, ${story.places[n.place].n}${progress.visited.has(n.id) ? " (walked)" : n.status === "unwritten" ? " (not yet painted)" : ""}</li>`).join("")}</ol><p>${ended}</p>`;
     }).join("");
 }
 

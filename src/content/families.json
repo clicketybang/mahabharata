@@ -1,0 +1,8 @@
+[
+  { "id": "kuru-pandava", "name": "Kuru · Pāṇḍava line", "pattern": "16 6", "note": "Sons of Pāṇḍu and their children." },
+  { "id": "kuru-kaurava", "name": "Kuru · Kaurava line", "pattern": "16 6 3 6", "note": "Sons of Dhṛtarāṣṭra. A sibling pattern to the Pāṇḍava line: both are Kurus." },
+  { "id": "yadava", "name": "Yādava", "pattern": "6 5", "note": "The Vṛṣṇi-Yādavas of Mathurā and Dvārakā." },
+  { "id": "panchala", "name": "Pāñcāla", "pattern": "6 5 2 5", "note": "The house of Drupada." },
+  { "id": "gandhara", "name": "Gāndhāra", "pattern": "2 5", "note": "The house of Subala, Gāndhārī’s father." },
+  { "id": "anga-suta", "name": "Aṅga · Sūta", "pattern": "2 5 2 5 10 5", "note": "Karṇa: raised by the charioteer Adhiratha, made king of Aṅga. (His birth to Kuntī is a secret the story keeps until after his death.)" }
+]

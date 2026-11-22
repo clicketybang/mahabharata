@@ -50,13 +50,14 @@ export function loadData(data: ReaderData, bodies: Record<string, Body>): void {
     story.cert[p.id] = p.certainty;
   });
 
+  story.families = Object.fromEntries(data.families.map(f => [f.id, f]));
   story.people = {};
   data.people.forEach(p => {
     const f = { ...p.figure } as unknown as FigureOpts;
     f.skin = lookup(SK, p.figure.skin);
     if (p.figure.cloth) f.cloth = lookup(C, p.figure.cloth);
     const person: Person = {
-      n: p.name, dev: p.dev, bio: p.bio, line: p.identity_colour, dash: p.line_pattern, home: p.home,
+      n: p.name, dev: p.dev, bio: p.bio, line: p.identity_colour, dash: story.families[p.family]?.pattern ?? "", family: p.family, home: p.home,
       returnsHome: p.returns_home, death: p.death_t, f,
     };
     story.people[p.id] = person;

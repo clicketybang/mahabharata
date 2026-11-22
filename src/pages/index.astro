@@ -12,6 +12,7 @@ import tiers from "../data/variant-tiers.json";
 const moments = (await getCollection("moments")).sort((a, b) => a.data.t_story - b.data.t_story);
 const people = await getCollection("people");
 const places = await getCollection("places");
+const families = await getCollection("families");
 
 const bodies = await Promise.all(
   moments.filter(m => m.data.status !== "unwritten").map(async m => ({ id: m.id, Content: (await render(m)).Content }))
@@ -21,6 +22,7 @@ const data = {
   moments: moments.map(m => ({ id: m.id, ...m.data })),
   people: people.map(p => ({ id: p.id, ...p.data })),
   places: places.map(p => ({ id: p.id, ...p.data })),
+  families: families.map(f => ({ id: f.id, ...f.data })),
   tiers,
 };
 ---

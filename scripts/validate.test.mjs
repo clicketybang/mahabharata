@@ -49,6 +49,7 @@ const FIXTURES = [
   ["place-certainty", "a place without a reason for its certainty", { "places.json": sub('"certainty": "textual", "certainty_note": "The field."', '"certainty": "textual"') }],
   ["place-level", "a spot with no site above it", { "places.json": sub('"level": "spot", "parent_id": "city"', '"level": "spot", "parent_id": "kuru"') }],
   ["place-level", "a realm inside a site", { "places.json": sub('"id": "naimisha", "name": "Naimiṣa", "level": "site", "parent_id": null', '"id": "naimisha", "name": "Naimiṣa", "level": "realm", "parent_id": "city"') }],
+  ["unknown-family", "a person in a family line that doesn't exist", { "people.json": sub('"family": "yadava"', '"family": "vrishni"') }],
   ["moment-at-realm", "a moment set in a whole realm", { "moments/b.mdx": sub("place_id: dvaraka", "place_id: kuru") }],
   ["missing-alt", "a <Beat> without alt text", { "moments/a.mdx": sub('alt="Two warriors face each other." ', "") }],
   ["missing-alt", "a drafted moment without art_alt", { "moments/b.mdx": sub('art_alt: "A figure."\n', "") }],

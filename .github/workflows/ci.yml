@@ -29,6 +29,8 @@ jobs:
         run: npm run test:validator
       - name: Contrast audit (WCAG AA for every UI text pair)
         run: npm run contrast
+      - name: Identity colours (colour-blind distinguishable; pattern = family line)
+        run: npm run identity
       - name: Type check
         run: npx astro check
       - name: Build
