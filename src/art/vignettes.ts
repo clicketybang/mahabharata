@@ -1,0 +1,24 @@
+// @ts-nocheck — faithful port of prototype v6; typed in a later refactor.
+/* Small painted vignettes for drafted (not yet scroll-animated) scenes. Keyed by the moment's `art`. */
+import { C, SK, defs } from "./palette";
+import { sun, scatter, filler, star } from "./motifs";
+import { fig } from "./figure";
+import { tent } from "./objects";
+import { placeIcon } from "./places";
+
+export function vignette(kind) {
+  const bg = `<rect width="900" height="300" fill="${C.sky}"/><rect y="220" width="900" height="80" fill="${C.ground}"/>${scatter(18, 0, 900, 10, 200, (x, y, r) => filler(x, y, r * .7), 5)}`;
+  const v = {
+    curse: `${placeIcon("hut", 640, 200, 2.6)}${fig({ x: 330, y: 260, s: .9, skin: SK.karna, cloth: C.madder, cloth2: C.indigo, crown: "mukuta", weapon: "bow" })}${fig({ x: 520, y: 270, s: .85, face: "left", skin: SK.elder, cloth: C.white, cloth2: C.ochre, crown: "topknot", weapon: "point", beard: true })}`,
+    omens: `<rect width="900" height="300" fill="${C.wall}"/>${fig({ x: 380, y: 270, s: .95, skin: SK.gandhari, cloth: C.indigoL, cloth2: C.ochre, crown: "female", female: true, veiled: true, weapon: "plead" })}${fig({ x: 520, y: 270, s: .9, face: "left", skin: SK.yudhi, cloth: C.white, cloth2: C.indigo, crown: "topknot", weapon: "point" })}<g transform="translate(700 240)"><path d="M-40 0 h80 l-10 -20 h-60z" fill="${C.madder}" stroke="${C.iron}" stroke-width="2"/><path d="M-10 -20 q 10 -40 0 -60 q 30 30 10 60z" fill="${C.ochreL}" stroke="${C.iron}" stroke-width="2"/></g>`,
+    boons: `<rect width="900" height="300" fill="${C.wall}"/>${fig({ x: 360, y: 300, s: .95, skin: SK.dhrit, cloth: C.indigo, cloth2: C.ochre, crown: "kirita", weapon: "none", blind: true, seated: true })}${fig({ x: 540, y: 280, s: .9, face: "left", skin: SK.draupadi, cloth: C.madder, cloth2: C.ochre, crown: "female", female: true, loose: true, weapon: "plead" })}`,
+    summons: `<rect width="900" height="300" fill="${C.wall}"/>${fig({ x: 320, y: 300, s: .9, skin: SK.dhrit, cloth: C.indigo, cloth2: C.ochre, crown: "kirita", weapon: "none", blind: true, seated: true })}${fig({ x: 480, y: 280, s: .88, face: "left", skin: SK.duryo, cloth: C.madder, cloth2: C.ochre, crown: "kirita", weapon: "point", mustache: true })}${fig({ x: 600, y: 280, s: .85, face: "left", skin: SK.shakuni, cloth: C.leaf, cloth2: C.madder, crown: "mukuta", weapon: "none", beard: true })}`,
+    exile: `${bg}${placeIcon("trees", 760, 210, 3)}${placeIcon("trees", 110, 210, 2.6)}${["yudhi", "bhima", "arjuna"].map((k, i) => fig({ x: 300 + i * 90, y: 280, s: .75, skin: SK[k], cloth: C.ochre, cloth2: C.leaf, crown: "topknot", weapon: "none" })).join("")}${fig({ x: 570, y: 280, s: .75, skin: SK.draupadi, cloth: C.madder, cloth2: C.ochre, crown: "female", female: true, loose: true, weapon: "none" })}`,
+    wheel: `${bg}${Array.from({ length: 5 }, (_, k) => `<circle cx="450" cy="150" r="${30 + k * 24}" fill="none" stroke="${C.madder}" stroke-width="5" stroke-dasharray="${10 + k * 4} 8"/>`).join("")}${fig({ x: 450, y: 240, s: .55, skin: SK.abhi, cloth: C.indigo, cloth2: C.ochre, crown: "kirita", weapon: "bow" })}`,
+    tent: `${bg}${tent(450, 250, 2.2)}${fig({ x: 330, y: 280, s: .8, skin: SK.yudhi, cloth: C.white, cloth2: C.indigo, crown: "kirita", weapon: "point" })}${fig({ x: 600, y: 280, s: .8, face: "left", skin: SK.arjuna, cloth: C.indigo, cloth2: C.ochre, crown: "kirita", weapon: "grab" })}`,
+    karna: `${bg}${sun(450, 110, 46)}<path d="M450 160 L450 260" stroke="${C.ochreL}" stroke-width="10" opacity=".6"/>${fig({ x: 450, y: 300, s: .75, face: "left", skin: SK.karna, cloth: C.madder, cloth2: C.indigo, crown: "kirita", weapon: "none", seated: true })}`,
+    victors: `<rect width="900" height="300" fill="${C.sky}"/>${scatter(40, 0, 900, 0, 200, (x, y, r) => star(x, y, 2 + r * 3), 3)}<rect y="220" width="900" height="80" fill="${C.ground}"/>${tent(220, 250, 1.6)}${tent(700, 250, 1.6)}${fig({ x: 400, y: 280, s: .8, skin: SK.bhima, cloth: C.indigo, cloth2: C.madder, crown: "mukuta", weapon: "fist", mustache: true })}${fig({ x: 520, y: 280, s: .8, face: "left", skin: SK.yudhi, cloth: C.white, cloth2: C.indigo, crown: "kirita", weapon: "none" })}`,
+    kcamp: `<rect width="900" height="300" fill="${C.sky}"/>${scatter(40, 0, 900, 0, 200, (x, y, r) => star(x, y, 2 + r * 3), 8)}<rect y="220" width="900" height="80" fill="${C.ground}"/>${tent(450, 250, 2, C.madder)}${fig({ x: 330, y: 290, s: .8, skin: SK.duryo, cloth: C.madder, cloth2: C.ochre, crown: "kirita", weapon: "none", mustache: true, seated: true })}${fig({ x: 600, y: 280, s: .8, face: "left", skin: SK.elder, cloth: C.white, cloth2: C.ochre, crown: "topknot", weapon: "plead", beard: true })}`,
+  };
+  return `<svg class="stub-art" viewBox="0 0 900 300" preserveAspectRatio="xMidYMid slice">${defs()}${v[kind] || bg}</svg>`;
+}

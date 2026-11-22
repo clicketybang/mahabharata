@@ -9,7 +9,8 @@
     "preview": "astro preview",
     "check": "astro check",
     "astro": "astro",
-    "deploy": "astro build && wrangler deploy"
+    "deploy": "astro build && wrangler deploy",
+    "test:parity": "python3 tests/parity/parity_check.py"
   },
   "dependencies": {
     "@astrojs/mdx": "^8.1.6",

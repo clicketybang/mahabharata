@@ -1,0 +1,12 @@
+---
+/* An inline time-jump (base-rules Rule 2). The engine tags it ↺ memory or ⟳ omen by comparing
+   story times, and pushes a return point. `at` = scroll progress to land on; `anchor` = a named
+   anchor declared in the target moment's frontmatter. */
+interface Props {
+  to: string;
+  at?: number;
+  anchor?: string;
+}
+const { to, at, anchor } = Astro.props;
+---
+<a class="jump" href={`#${to}`} data-to={to} data-at={at} data-anchor={anchor}><slot /></a>

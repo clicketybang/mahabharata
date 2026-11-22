@@ -1,0 +1,10 @@
+/* Srikalahasti Kalamkari design tokens — see the project doc claude/scene-page-design.md.
+   Palette: Cotton #f6ecd8 · Cotton-deep #eedfc0 · Caption cream #fbf4e4 · Iron ink #2b2018 ·
+   Madder #a63a2b · Madder-brown #8a2f22 · Indigo #2e4377 · Ochre #c9973a · Leaf #5b7a46 · Muted #6e5b45 */
+body {
+  --bg: #f6ecd8; --bg2: #eedfc0; --ink: #2b2018; --muted: #6e5b45;
+  --accent: #a63a2b; --accent2: #2e4377; --accent3: #5b7a46; --line: #2b2018; --head: #8a2f22;
+  --capbg: #fbf4e4; --capshadow: 0 1px 0 rgba(43,32,24,.06), 0 12px 28px rgba(90,60,25,.14);
+  --btnbg: #fbf4e4; --btnink: #2b2018; --btnshadow: 0 1px 0 rgba(43,32,24,.25);
+  --fh: "Rozha One", serif; --fb: Spectral, Georgia, serif; --fbs: 18px; --chip: #f1e3c4;
+}

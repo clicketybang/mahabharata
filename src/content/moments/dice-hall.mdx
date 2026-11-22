@@ -1,0 +1,64 @@
+---
+t_story: 10
+place_id: hall
+cast:
+  - { id: yudhishthira, role: present }
+  - { id: bhima, role: present }
+  - { id: arjuna, role: present }
+  - { id: draupadi, role: present }
+  - { id: duryodhana, role: present }
+  - { id: dushasana, role: present }
+  - { id: karna, role: present }
+title: "The Game of Dice"
+status: built
+era: "Sabhā"
+parva: "Sabhā Parva"
+dev: "द्यूतसभा"
+narrator_chain: ["Vaiśampāyana", "Janamejaya"]
+ce_ref: { parva: 2, adhyaya: "43–65", label: "Sabhā Parva 2.43–2.65 (Dyūta)", verified: false }
+variant_tier: 0
+debate_note: "Draupadī’s prayer to Kṛṣṇa during the disrobing is in the CE apparatus (544*), not the constituted text; scholars disagree on whether the intervention is early."
+content_notes: ["Contains: humiliation, assault on a woman"]
+assembly: true
+branches: [[character, draupadi], [place, palace], [character, karna]]
+intro: "The assembly hall of Hastināpura, the day an empire was lost on a throw of dice — and a question was asked that no one could answer."
+len: 8
+cams: [[0,1200,640,2400],[0.12,1200,640,2400],[0.2,1200,960,760],[0.34,1200,960,760],[0.44,1700,800,1500],[0.56,1980,880,760],[0.66,1980,880,760],[0.72,640,860,1100],[0.82,880,880,620],[1,880,880,620]]
+anchors: { vow: 0.84 }
+---
+
+<Beat from={0} to={0.14} title="The Hall" dev="सभा" cast={["yudhishthira", "duryodhana", "bhima", "arjuna"]}>
+
+Hastināpura’s assembly is full: the blind king on his throne, Bhīṣma and Droṇa among the elders, the Kaurava princes, the five Pāṇḍavas. Yudhiṣṭhira has been invited to play. A king, he believes, may not refuse a challenge.
+
+</Beat>
+
+<Beat from={0.14} to={0.34} title="The Throws" dev="अक्षाः" cast={["yudhishthira", "duryodhana"]}>
+
+Śakuni throws for Duryodhana. Yudhiṣṭhira stakes pearls, gold, chariots, his army, his kingdom — and loses each. Then his brothers, one by one. Then himself. Then, at Śakuni’s prompting, Draupadī.
+
+</Beat>
+
+<Beat from={0.34} to={0.5} title="The Summons" dev="आह्वानम्" warn="Content: assault" cast={["draupadi", "dushasana", "duryodhana"]}>
+
+A messenger is sent to fetch her. Draupadī sends back a question instead. Duḥśāsana drags her into the hall by her hair, in a single garment.
+
+</Beat>
+
+<Beat from={0.5} to={0.66} title="Draupadī’s Question" dev="द्रौपदीप्रश्नः" cast={["draupadi"]}>
+
+She asks the elders: did Yudhiṣṭhira lose himself first? If he was already a slave, how could he stake her? It is a question of law, and the hall cannot answer it.
+
+</Beat>
+
+<Beat from={0.66} to={0.78} title="The Silence" dev="मौनम्" cast={["karna", "draupadi"]}>
+
+Bhīṣma says dharma is subtle. Droṇa is silent. Only young Vikarṇa says she was not lawfully won. Karṇa — who, unknown to all, carries <Jump to="karna-curse">a brahmin’s curse</Jump> — mocks her as a woman with five husbands.
+
+</Beat>
+
+<Beat from={0.78} to={1.01} title="Bhīma’s Vow" dev="भीमप्रतिज्ञा" cast={["bhima", "duryodhana", "dushasana"]}>
+
+Bhīma rises and swears before gods and men: he will break Duryodhana’s thigh in battle, and tear open Duḥśāsana’s chest and drink his blood. The words will wait thirteen years <Jump to="day-17" at={0.5}>to be kept</Jump>.
+
+</Beat>

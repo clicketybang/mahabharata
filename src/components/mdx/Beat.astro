@@ -1,0 +1,16 @@
+---
+/* One beat (caption) of a scroll-animated scene. `from`/`to` are scroll progress (0–1).
+   `cast` = portraits shown in the caption; `dev` = Devanagari title; `warn` = optional content note. */
+interface Props {
+  from: number;
+  to: number;
+  title: string;
+  dev: string;
+  cast?: string[];
+  warn?: string;
+}
+const { from, to, title, dev, cast = [], warn } = Astro.props;
+---
+<div class="beat-src" data-from={from} data-to={to} data-title={title} data-dev={dev} data-cast={JSON.stringify(cast)} data-warn={warn}>
+  <slot />
+</div>
