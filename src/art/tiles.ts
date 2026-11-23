@@ -8,4 +8,15 @@ export function tiles(): [string, string, string] {
   return [h, v, texture];
 }
 
+/** the corner ornament of the plain (non-threshold) frame: a rosette with creeper sprigs running along both edges.
+    Drawn for the top-left corner; the other three are the same art rotated. */
+export function corners(): [string, string, string, string] {
+  const art = `<path d='M6 6 H62 M6 6 V62' stroke='#2b2018' stroke-width='2'/><path d='M14 14 Q30 10 50 16 M14 14 Q10 30 16 50' fill='none' stroke='#5b7a46' stroke-width='1.6'/>`
+    + `<path d='M34 13 q 4 -7 9 -3 q -3 6 -9 3z M13 34 q -7 4 -3 9 q 6 -3 3 -9z' fill='#5b7a46' stroke='#2b2018' stroke-width='.7'/>`
+    + `<path d='M50 16 q 5 -6 10 -1 q -5 6 -10 1z M16 50 q -6 5 -1 10 q 6 -5 1 -10z' fill='#a63a2b' stroke='#2b2018' stroke-width='.7'/>`
+    + `<g transform='translate(15 15)'>${[0, 45, 90, 135, 180, 225, 270, 315].map(a => `<ellipse rx='3.2' ry='7' transform='rotate(${a}) translate(0 -6.5)' fill='${a % 90 ? "#c9973a" : "#a63a2b"}' stroke='#2b2018' stroke-width='.7'/>`).join("")}<circle r='4.2' fill='#f6ecd8' stroke='#2b2018' stroke-width='.8'/><circle r='1.8' fill='#2e4377'/></g>`;
+  const at = (r: number) => `<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'><g transform='rotate(${r} 32 32)'>${art}</g></svg>`;
+  return [at(0), at(90), at(180), at(270)]; // top-left, top-right, bottom-right, bottom-left
+}
+
 export const BANDS = `<div class="band t"></div><div class="band b"></div><div class="band l"></div><div class="band r"></div>`;

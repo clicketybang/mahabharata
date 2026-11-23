@@ -19,9 +19,10 @@ export interface PersonData {
   id: string; name: string; dev: string; bio: string; identity_colour: string; family: string; principal: boolean; minor: boolean;
   home: string; returns_home: boolean; death_t?: number; aliases: string[];
   figure: Record<string, string | boolean>;
+  stages: ({ from: number; age: string } & Record<string, string | number | boolean>)[];
 }
 export interface MomentData {
-  id: string; t_story: number; place_id: string; cast: { id: string; role: string }[];
+  id: string; t_story: number; place_id: string; cast: { id: string; role: string; pose?: string; seated?: boolean }[];
   title: string; status: Status; era: string; parva: string; dev?: string;
   narrator_chain: string[]; narration_note?: string;
   ce_ref: { parva: number; adhyaya: string; label: string; verified: boolean };
@@ -44,9 +45,13 @@ export interface Place {
 export interface Person {
   n: string; dev: string; bio: string; line: string; dash: string; family: string; principal: boolean; minor: boolean; home: string;
   returnsHome: boolean; death?: number; f: FigureOpts;
+  /** life stages, oldest last: from story time `from`, these figure options apply */
+  stages: { from: number; f: Partial<FigureOpts> }[];
 }
 /** a moment on the timeline (the shape the rule works on) */
-export interface Node { id: string; t: number; place: string; cast: string[]; title: string; status: Status; era: string }
+export interface Node { id: string; t: number; place: string; cast: string[]; title: string; status: Status; era: string;
+  /** per cast member: how they are drawn here (pose, seated) */
+  look: Record<string, { weapon?: string; seated?: boolean }> }
 
 export interface Beat { from: number; to: number; title: string; dev: string; html: string; warn: string | null; cast: string[]; alt: string }
 

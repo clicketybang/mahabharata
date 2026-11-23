@@ -1,7 +1,7 @@
 /* The reader: boots the engine and wires global events.
    Modules: state · data · pages · camera · nav · overlays · maps/{index,kala,desha,panels} · badges · rule.
    All story data arrives from the content collections (see src/pages/index.astro). */
-import { tiles } from "../art/tiles";
+import { tiles, corners } from "../art/tiles";
 import { story, progress, ui, store } from "./state";
 import { loadData, readBodies } from "./data";
 import { SUB } from "./pages";
@@ -20,7 +20,29 @@ function applyKalamkari(): void {
   r.setProperty("--tile-h", `url("data:image/svg+xml,${encodeURIComponent(h)}")`);
   r.setProperty("--tile-v", `url("data:image/svg+xml,${encodeURIComponent(v)}")`);
   r.setProperty("--texture", tex);
+  corners().forEach((c, i) => r.setProperty(`--corner-${["tl", "tr", "br", "bl"][i]}`, `url("data:image/svg+xml,${encodeURIComponent(c)}")`));
   $("#themeName").textContent = SUB;
+}
+
+/** names on hover and focus (owner, 2026-11-22): any element with data-tip shows a small label beside it */
+function installTips(): void {
+  const tip = document.createElement("div");
+  tip.id = "tip"; tip.setAttribute("aria-hidden", "true"); document.body.appendChild(tip);
+  let cur: Element | null = null;
+  const show = (el: Element, x?: number, y?: number) => {
+    const t = el.getAttribute("data-tip"); if (!t) return;
+    cur = el; tip.textContent = t; tip.classList.add("on");
+    const r = el.getBoundingClientRect(), px = x ?? r.left + r.width / 2, py = y ?? r.top;
+    const w = tip.offsetWidth, left = Math.min(innerWidth - w - 6, Math.max(6, px - w / 2));
+    tip.style.left = `${left}px`; tip.style.top = `${Math.max(6, py - tip.offsetHeight - 12)}px`;
+  };
+  const hide = () => { cur = null; tip.classList.remove("on"); };
+  document.addEventListener("pointerover", e => { if (e.pointerType === "touch") return; const el = (e.target as Element).closest("[data-tip]"); if (el) show(el, e.clientX, e.clientY); else hide(); });
+  document.addEventListener("pointermove", e => { if (cur && e.pointerType !== "touch") show(cur, e.clientX, e.clientY); });
+  document.addEventListener("pointerleave", hide);
+  document.addEventListener("focusin", e => { const el = (e.target as Element).closest?.("[data-tip]"); if (el) show(el); else hide(); });
+  document.addEventListener("focusout", hide);
+  addEventListener("scroll", hide, { passive: true });
 }
 
 function onClick(e: MouseEvent): void {
@@ -115,6 +137,7 @@ export function startReader(data: ReaderData): void {
   $("#gateNo").onclick = () => { closeOverlay($("#gate")); ui.pendingGo = null; };
 
   applyKalamkari();
+  installTips();
   const h = location.hash.slice(1);
   go(h && story.scenes[h] ? h : "home");
 }

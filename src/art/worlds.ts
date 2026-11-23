@@ -1,7 +1,8 @@
 /* Painted worlds for the built (scroll-animated) scenes, with their scroll choreography.
    Keyed by moment id. Camera keyframes live in the moment's MDX frontmatter (`cams`). */
-import { C, SK, S, defs } from "./palette";
+import { C, S, defs } from "./palette";
 import { rosette, sun, bird, scatter, filler } from "./motifs";
+import { who } from "./looks";
 import { fig } from "./figure";
 import { chariot, elephant, crowdRow, arrowShape, tent } from "./objects";
 import { clamp, ease } from "../engine/util";
@@ -24,15 +25,15 @@ function worldDay17(): string {
    ${crowdRow(-150, 2600, 660, .95, C.madder, 48, 5)}
    ${tent(110, 700, 1.3)}
    ${scatter(30, -400, 2700, 760, 1180, (x, y, r) => r > .55 ? rosette(x, y, 6 + r * 5) : "", 11)}
-   <g>${fig({ id: "bhima", x: 420, y: 930, s: 1.45, skin: SK.bhima, cloth: C.indigo, cloth2: C.madder, crown: "mukuta", weapon: "mace", mustache: true })}
-     <g id="dush">${fig({ x: 640, y: 930, s: 1.4, face: "left", skin: SK.dush, cloth: C.leaf, cloth2: C.ochre, crown: "mukuta", weapon: "none", mustache: true })}</g>
+   <g>${fig(who("bhima", { id: "bhima", x: 420, y: 930, s: 1.45, weapon: "mace" }))}
+     <g id="dush">${fig(who("dushasana", { x: 640, y: 930, s: 1.4, face: "left", weapon: "none" }))}</g>
      <g id="blood" opacity="0">${scatter(14, 560, 720, 760, 900, (x, y, r) => `<circle cx="${x}" cy="${y}" r="${3 + r * 6}" fill="${C.madder}" stroke="${C.iron}" stroke-width="1"/>`, 5)}</g></g>
    ${chariot({ id: "arjCh", x: 1260, y: 930, banner: "hanuman", cap: C.madder, cap2: C.indigo })}
-   ${fig({ x: 1312, y: 834, s: .92, skin: SK.krishna, cloth: C.ochre, cloth2: C.madder, crown: "krishna", weapon: "reins", halo: true })}
-   ${fig({ id: "arjuna", x: 1232, y: 834, s: 1.02, skin: SK.arjuna, cloth: C.indigo, cloth2: C.ochre, crown: "kirita", weapon: "bow", armour: true })}
+   ${fig(who("krishna", { x: 1312, y: 834, s: .92, weapon: "reins" }))}
+   ${fig(who("arjuna", { id: "arjuna", x: 1232, y: 834, s: 1.02, weapon: "bow" }))}
    <g>${chariot({ id: "karCh", x: 2200, y: 930, face: "left", banner: "elephant", cap: C.indigo, cap2: C.leaf })}
-   ${fig({ x: 2148, y: 834, s: .92, face: "left", skin: SK.shalya, cloth: C.leaf, cloth2: C.ochre, crown: "mukuta", weapon: "reins", beard: true })}</g>
-   <g id="karnaFig">${fig({ x: 2226, y: 834, s: 1.02, face: "left", skin: SK.karna, cloth: C.madder, cloth2: C.indigo, crown: "kirita", weapon: "bow" })}</g>
+   ${fig(who("shalya", { x: 2148, y: 834, s: .92, face: "left", weapon: "reins" }))}</g>
+   <g id="karnaFig">${fig(who("karna", { x: 2226, y: 834, s: 1.02, face: "left", weapon: "bow" }))}</g>
    ${Array.from({ length: 8 }, (_, i) => arrowShape("ar" + i)).join("")}
    <g id="anjalika" opacity="0"><circle cx="1330" cy="733" r="70" fill="url(#lampG)"/><path d="M1240 733 L1420 733" stroke="${C.iron}" stroke-width="5"/><path d="M1420 733 l -22 -12 v24z" fill="${C.madderL}" stroke="${C.iron}" stroke-width="2"/></g>
    <path id="dust" d="M2090 935 q 40 -30 80 0 q 40 -30 80 0" fill="none" stroke="${C.iron}" stroke-width="3" opacity="0"/>
@@ -74,22 +75,22 @@ function worldDice(): string {
    ${arches}
    <g transform="translate(1200 950)"><path d="M-120 0 L-120 -300 C -120 -380 120 -380 120 -300 L120 0Z" fill="${C.madder}" stroke="${C.iron}" stroke-width="${S}"/><path d="M-100 0 L-100 -290 C -100 -350 100 -350 100 -290 L100 0Z" fill="${C.ochre}" stroke="${C.iron}" stroke-width="2"/>${rosette(0, -300, 22)}
      <rect x="-130" y="-120" width="260" height="120" fill="${C.indigo}" stroke="${C.iron}" stroke-width="${S}"/><rect x="-130" y="-120" width="260" height="120" fill="url(#clothPat)"/></g>
-   ${fig({ x: 1200, y: 830, s: 1.1, skin: SK.dhrit, cloth: C.indigo, cloth2: C.ochre, crown: "kirita", weapon: "none", blind: true, seated: true })}
-   ${fig({ x: 420, y: 950, s: 1.1, skin: SK.elder, cloth: C.white, cloth2: C.ochre, crown: "mukuta", weapon: "none", beard: true, seated: true })}
-   ${fig({ x: 580, y: 950, s: 1.1, skin: SK.elder, cloth: C.ochre, cloth2: C.madder, crown: "topknot", weapon: "none", beard: true, seated: true })}
-   ${fig({ x: 740, y: 950, s: 1.05, skin: SK.yudhi, cloth: C.white, cloth2: C.indigo, crown: "topknot", weapon: "none", seated: true })}
-   ${fig({ id: "bhima", x: 880, y: 1010, s: 1.35, skin: SK.bhima, cloth: C.indigo, cloth2: C.madder, crown: "mukuta", weapon: "fist", mustache: true })}
-   ${fig({ x: 780, y: 1030, s: 1.2, skin: SK.arjuna, cloth: C.indigo, cloth2: C.ochre, crown: "kirita", weapon: "none" })}
+   ${fig(who("dhritarashtra", { x: 1200, y: 830, s: 1.1, weapon: "none", seated: true }))}
+   ${fig(who("bhishma", { x: 420, y: 950, s: 1.1, weapon: "none", seated: true }))}
+   ${fig(who("drona", { x: 580, y: 950, s: 1.1, weapon: "none", seated: true }))}
+   ${fig(who("vidura", { x: 740, y: 950, s: 1.05, weapon: "none", seated: true }))}
+   ${fig(who("bhima", { id: "bhima", x: 880, y: 1010, s: 1.35, weapon: "fist" }))}
+   ${fig(who("arjuna", { x: 780, y: 1030, s: 1.2, weapon: "none" }))}
    <g transform="translate(1200 1010)"><ellipse rx="150" ry="28" fill="${C.indigo}" stroke="${C.iron}" stroke-width="${S}"/><path d="M-110 0 H110 M0 -20 V20" stroke="${C.ochreL}" stroke-width="5"/>
      <g id="die1" transform="translate(-30 -10)"><rect x="-10" y="-10" width="20" height="20" fill="${C.white}" stroke="${C.iron}" stroke-width="2"/><circle r="2.5" fill="${C.madder}"/></g>
      <g id="die2" transform="translate(30 -6)"><rect x="-10" y="-10" width="20" height="20" fill="${C.white}" stroke="${C.iron}" stroke-width="2"/><circle cx="-4" cy="-4" r="2.2" fill="${C.iron}"/><circle cx="4" cy="4" r="2.2" fill="${C.iron}"/></g></g>
-   ${fig({ x: 1010, y: 1060, s: 1.15, skin: SK.yudhi, cloth: C.ochre, cloth2: C.indigo, crown: "kirita", weapon: "dice", seated: true })}
-   ${fig({ x: 1390, y: 1060, s: 1.15, face: "left", skin: SK.shakuni, cloth: C.leaf, cloth2: C.madder, crown: "mukuta", weapon: "dice", beard: true, seated: true })}
-   ${fig({ x: 1560, y: 1010, s: 1.3, face: "left", skin: SK.duryo, cloth: C.madder, cloth2: C.ochre, crown: "kirita", weapon: "point", mustache: true })}
-   ${fig({ x: 1700, y: 1000, s: 1.25, face: "left", skin: SK.karna, cloth: C.indigo, cloth2: C.ochre, crown: "kirita", weapon: "none" })}
+   ${fig(who("yudhishthira", { x: 1010, y: 1060, s: 1.15, weapon: "dice", seated: true }))}
+   ${fig(who("shakuni", { x: 1390, y: 1060, s: 1.15, face: "left", weapon: "dice", seated: true }))}
+   ${fig(who("duryodhana", { x: 1560, y: 1010, s: 1.3, face: "left", weapon: "point" }))}
+   ${fig(who("karna", { x: 1700, y: 1000, s: 1.25, face: "left", weapon: "none" }))}
    <g transform="translate(2150 950)"><path d="M-110 0 V-420 C -110 -520 110 -520 110 -420 V0Z" fill="${C.iron}" opacity=".85"/><path d="M-110 0 V-420 C -110 -520 110 -520 110 -420 V0" fill="none" stroke="${C.ochre}" stroke-width="10"/></g>
-   <g id="drag">${fig({ x: 2010, y: 1030, s: 1.25, face: "left", skin: SK.dush, cloth: C.leaf, cloth2: C.ochre, crown: "mukuta", weapon: "grab", mustache: true })}
-     ${fig({ x: 2100, y: 1030, s: 1.22, face: "left", skin: SK.draupadi, cloth: C.madder, cloth2: C.ochre, crown: "female", female: true, loose: true, weapon: "plead" })}</g>
+   <g id="drag">${fig(who("dushasana", { x: 2010, y: 1030, s: 1.25, face: "left", weapon: "grab" }))}
+     ${fig(who("draupadi", { x: 2100, y: 1030, s: 1.22, face: "left", weapon: "plead" }))}</g>
   </g></g>`;
 }
 

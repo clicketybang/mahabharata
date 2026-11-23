@@ -11,14 +11,14 @@ export function renderPatra(): void {
   const met = new Set([...progress.visited].flatMap(id => story.node[id]?.cast || []));
   $("#patra").innerHTML = `<div class="pgrid">${Object.entries(story.people).map(([id, p]) => {
     const seen = story.timeline.filter(n => n.cast.includes(id) && progress.visited.has(n.id)).length;
-    return `<button class="pcard ${met.has(id) ? "" : "unmet"}" data-pp="${id}" style="--c:${p.line}"><div class="face">${headSVG(id)}</div><div class="nm">${met.has(id) ? p.n : "?"}</div><div style="font-size:12px;color:var(--muted)">${seen ? seen + " walked" : ""}</div></button>`;
+    return `<button class="pcard ${met.has(id) ? "" : "unmet"}" data-pp="${id}" data-tip="${met.has(id) ? p.n : "Not met yet"}" style="--c:${p.line}"><div class="face">${headSVG(id)}</div><div class="nm">${met.has(id) ? p.n : "?"}</div><div style="font-size:12px;color:var(--muted)">${seen ? seen + " walked" : ""}</div></button>`;
   }).join("")}</div>`;
   $("#patra").onclick = e => { const c = (e.target as Element).closest<HTMLElement>("[data-pp]"); if (c) openSoul(c.dataset.pp ?? "", ui.current); };
 }
 
 export function renderMarga(): void {
   if (!progress.path.length) { $("#marga").innerHTML = `<div class="empty">Your path begins when you choose at the end of a scene.</div>`; return; }
-  $("#marga").innerHTML = `<div class="journey">${progress.path.map(r => `<div class="jstep" data-go="${r.to}" role="button" tabindex="0"><div class="dot">${r.by === "character" ? headSVG(r.ref) : placeBadge(r.ref)}</div>
+  $("#marga").innerHTML = `<div class="journey">${progress.path.map(r => `<div class="jstep" data-go="${r.to}" role="button" tabindex="0"><div class="dot" data-tip="${r.by === "character" ? story.people[r.ref].n : placeName(r.ref)}">${r.by === "character" ? headSVG(r.ref) : placeBadge(r.ref)}</div>
     <span class="by">${r.by === "character" ? "followed " + story.people[r.ref].n : "went to " + placeName(r.ref)}</span><b>${story.node[r.from].title} → ${story.node[r.to].title}</b>${r.note ? `<div class="bubble">${r.note}</div>` : ""}</div>`).join("")}</div>`;
 }
 

@@ -25,7 +25,7 @@ export function openSoul(pid: string, fromId: string): void {
     html += `<button class="smo ${unw ? "unw" : ""} ${isHere ? "here" : ""}" ${unw ? "disabled" : `data-go="${n.id}"`} id="smo-${n.id}" style="--c:${p.line}">
       <span class="pin">${placeBadge(n.place)}</span>${seen ? `<span class="tick">✓ walked</span>` : ""}
       <b>${n.title}${story.assembly.has(n.id) ? ` <span class="cert" title="Every thread passes through this moment">✦ assembly</span>` : ""}</b><div class="meta">${placeName(n.place)}${others.length ? " · with " + others.map(c => story.people[c].n).join(", ") : " · alone"}</div>
-      ${isHere ? `<span class="youare">◉ ${hereNote}</span>` : ""}${unw ? `<div class="meta" style="font-family:Kalam">not yet painted</div>` : ""}</button>`;
+      ${isHere ? `<span class="youare">◉ ${hereNote}</span>` : ""}${unw ? `<div class="meta" style="font-family:var(--fl)">not yet painted</div>` : ""}</button>`;
   });
   if (p.death != null) html += `<div class="sdeath">✦ Here ${p.n}’s thread ends.</div>`;
   html += `</div></div>`;

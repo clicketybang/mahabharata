@@ -26,6 +26,14 @@ export function readBodies(): Record<string, Body> {
   return bodies;
 }
 
+/** how a person looks at story time t: their adult look, with the latest life stage that has begun by t laid over it.
+    Without t (maps, the souls panel) people are drawn as adults. */
+export function figureFor(pid: string, t?: number): FigureOpts {
+  const p = story.people[pid];
+  const st = t == null ? undefined : p.stages.filter(s => s.from <= t).at(-1);
+  return { ...p.f, ...(st?.f ?? {}) };
+}
+
 /** the site a place belongs to: a spot's parent site, or the place itself */
 export function siteOf(pid: string): string {
   const p = story.places[pid];
@@ -53,19 +61,25 @@ export function loadData(data: ReaderData, bodies: Record<string, Body>): void {
   story.families = Object.fromEntries(data.families.map(f => [f.id, f]));
   story.people = {};
   data.people.forEach(p => {
-    const f = { ...p.figure } as unknown as FigureOpts;
-    f.skin = lookup(SK, p.figure.skin);
-    if (p.figure.cloth) f.cloth = lookup(C, p.figure.cloth);
+    const colours = (raw: Record<string, unknown>): Partial<FigureOpts> => {
+      const o = { ...raw } as Record<string, unknown>;
+      if (o.skin) o.skin = lookup(SK, o.skin);
+      for (const k of ["cloth", "cloth2", "hairColor"]) if (o[k]) o[k] = lookup(C, o[k]);
+      return o as Partial<FigureOpts>;
+    };
+    const f = colours(p.figure) as FigureOpts;
+    const stages = (p.stages || []).map(({ from, ...rest }) => ({ from, f: colours(rest) })).sort((a, b) => a.from - b.from);
     const person: Person = {
       n: p.name, dev: p.dev, bio: p.bio, line: p.identity_colour, dash: story.families[p.family]?.pattern ?? "", family: p.family, principal: p.principal, minor: p.minor, home: p.home,
-      returnsHome: p.returns_home, death: p.death_t, f,
+      returnsHome: p.returns_home, death: p.death_t, f, stages,
     };
     story.people[p.id] = person;
   });
 
   story.tiers = data.tiers;
   story.timeline = data.moments
-    .map(m => ({ id: m.id, t: m.t_story, place: m.place_id, cast: m.cast.map(c => c.id), title: m.title, status: m.status, era: m.era }))
+    .map(m => ({ id: m.id, t: m.t_story, place: m.place_id, cast: m.cast.map(c => c.id), title: m.title, status: m.status, era: m.era,
+      look: Object.fromEntries(m.cast.map(c => [c.id, { weapon: c.pose, seated: c.seated }])) }))
     .sort((a, b) => a.t - b.t);
   story.node = Object.fromEntries(story.timeline.map(n => [n.id, n]));
   // Kāla rows (Sprint 3, D1): one per site that a moment or a person's home falls in
